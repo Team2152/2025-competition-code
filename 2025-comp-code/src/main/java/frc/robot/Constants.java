@@ -16,4 +16,34 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  /**
+   * The Constants for the Drivetrain.
+   */
+  public static final class DriveConstants
+  {
+    /**
+     * The unique ID for the Left Front (motor type here) Motor. 
+     * This should be used as an Enum. 
+     * <p>This is not the internal Motor ID, it is simply a easy-to-read & unique value for each motor.
+     */
+    public static final int LEFT_FRONT = 1;
+    /**
+     * The unique ID for the Left Back (motor type here) Motor. 
+     * This should be used as an Enum. 
+     * <p>This is not the internal Motor ID, it is simply a easy-to-read & unique value for each motor.
+     */
+    public static final int LEFT_BACK = 2;
+    /**
+     * The unique ID for the Right Front (motor type here) Motor. 
+     * This should be used as an Enum. 
+     * <p>This is not the internal Motor ID, it is simply a easy-to-read & unique value for each motor.
+     */
+    public static final int RIGHT_FRONT = 3;
+    /**
+     * The unique ID for the Right Back (motor type here) Motor. 
+     * This should be used as an Enum. 
+     * <p>This is not the internal Motor ID, it is simply a easy-to-read & unique value for each motor.
+     */
+    public static final int RIGHT_BACK = 4;
+  }
 }
