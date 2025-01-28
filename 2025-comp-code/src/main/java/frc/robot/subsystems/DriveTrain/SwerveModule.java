@@ -12,7 +12,17 @@ import java.io.ObjectInputFilter.Config;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 
-public class SwerveModules {
+public class SwerveModule {
+
+    private final TalonFX m_drivingSparkMax;
+    private final SparkMax m_turningSparkMax;
+
+    public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset)
+    {
+        m_drivingSparkMax = new TalonFX(drivingCANId);
+        m_turningSparkMax = new SparkMax(turningCANId, MotorType.kBrushless);
+        
+    }
 
     public void configureMotors() {
         // Initialize SparkMax motor controller
