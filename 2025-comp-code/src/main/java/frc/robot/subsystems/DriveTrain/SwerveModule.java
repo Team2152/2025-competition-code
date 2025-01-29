@@ -102,8 +102,6 @@ public class SwerveModule {
         .velocityConversionFactor(SwerveConstants.kDrivingEncoderVelocityFactor);
         
 
-    _drivingPIDController.setFeedbackDevice(m_drivingEncoder);
-    m_turningPIDController.setFeedbackDevice(m_turningEncoder);
 
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
