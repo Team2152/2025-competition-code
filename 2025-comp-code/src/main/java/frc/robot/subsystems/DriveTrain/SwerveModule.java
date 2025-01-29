@@ -74,8 +74,8 @@ public class SwerveModule {
      configSpark.closedLoop.velocityFF(SwerveConstants.kTurningFF);
     
      configSpark
-     .inverted(true)
-     .idleMode(IdleMode.kBrake);
+     .inverted(SwerveConstants.kTurningEncoderInverted)
+     .idleMode(SwerveConstants.kTurningMotorIdleMode);
  
      configSpark.encoder
      .positionConversionFactor(1000)
@@ -90,11 +90,12 @@ public class SwerveModule {
         .i(SwerveConstants.kDrivingI)
         .d(SwerveConstants.kDrivingD)
         .outputRange(SwerveConstants.kDrivingMinOutput, SwerveConstants.kDrivingMaxOutput);
- 
+        configSpark
+        .idleMode(SwerveConstants.kDrivingMotorIdleMode);
         // Set kFF
-     //configSpark.closedLoop.velocityFF(1/Kv);
+     //configTalon.closedLoop.velocityFF(1/Kv);
         
-        
+
     _drivingPIDController.setFeedbackDevice(m_drivingEncoder);
     m_turningPIDController.setFeedbackDevice(m_turningEncoder);
 
