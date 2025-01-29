@@ -71,41 +71,39 @@ public class SwerveModule {
         .outputRange(SwerveConstants.kTurningMinOutput, SwerveConstants.kTurningMaxOutput);
  
         // Set kFF
-     configSpark.closedLoop.velocityFF(SwerveConstants.kTurningFF);
+     configSpark.closedLoop
+     .velocityFF(SwerveConstants.kTurningFF);
     
      configSpark
      .inverted(SwerveConstants.kTurningEncoderInverted)
      .idleMode(SwerveConstants.kTurningMotorIdleMode);
  
      configSpark.encoder
-     .positionConversionFactor(1000)
-     .velocityConversionFactor(1000);
+     .positionConversionFactor(SwerveConstants.kTurningEncoderPositionFactor)
+     .velocityConversionFactor(SwerveConstants.kTurningEncoderPositionFactor);
 
     // Talon config
     SparkMaxConfig configTalon = new SparkMaxConfig();
 
     // Set PID gains Talon
     configTalon.closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .p(SwerveConstants.kDrivingP)
         .i(SwerveConstants.kDrivingI)
         .d(SwerveConstants.kDrivingD)
         .outputRange(SwerveConstants.kDrivingMinOutput, SwerveConstants.kDrivingMaxOutput);
-        configSpark
-        .idleMode(SwerveConstants.kDrivingMotorIdleMode);
         // Set kFF
-     //configTalon.closedLoop.velocityFF(1/Kv);
+        //configTalon.closedLoop.velocityFF(1/Kv);
+        configTalon
+        .idleMode(SwerveConstants.kDrivingMotorIdleMode);
+
+        configTalon.encoder
+        .positionConversionFactor(SwerveConstants.kDrivingEncoderPositionFactor)
+        .velocityConversionFactor(SwerveConstants.kDrivingEncoderVelocityFactor);
         
 
     _drivingPIDController.setFeedbackDevice(m_drivingEncoder);
     m_turningPIDController.setFeedbackDevice(m_turningEncoder);
-
-    m_drivingEncoder.setPositionConversionFactor(SwerveConstants.kDrivingEncoderPositionFactor);
-    m_drivingEncoder.setVelocityConversionFactor(ModuleConstants.kDrivingEncoderVelocityFactor);
-
-    m_turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderPositionFactor);
-    m_turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderVelocityFactor);
-
-    m_turningEncoder.setInverted(ModuleConstants.kTurningEncoderInverted);
 
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
@@ -113,7 +111,7 @@ public class SwerveModule {
 
 
     //m_drivingSparkMax.setIdleMode(ModuleConstants.kDrivingMotorIdleMode);
-    m_turningSparkMax.setIdleMode(ModuleConstants.kTurningMotorIdleMode);
+;
     //m_drivingSparkMax.setSmartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
     m_turningSparkMax.setSmartCurrentLimit(ModuleConstants.kTurningMotorCurrentLimit);
 
