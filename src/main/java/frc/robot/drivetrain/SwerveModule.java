@@ -18,7 +18,10 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import frc.robot.Configs;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SwerveConstants;
+import frc.lib.Conversions;
 
 public class SwerveModule {
   private final TalonFX m_drivingMotor;
@@ -31,7 +34,7 @@ public class SwerveModule {
 
   private final SparkClosedLoopController m_turningClosedLoopController;
 
-  private double m_chassisAngularOffset = 0;
+  private double m_chassisAngularOffset = 270;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
 
@@ -44,7 +47,7 @@ public class SwerveModule {
     m_turningMotor.configure(Configs.MAXSwerveModule.turningConfig, ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
-    m_drivingMotor.getConfigurator().apply(Configs.MAXSwerveModule.drivingConfig);
+    //m_drivingMotor.getConfigurator().apply(Configs.MAXSwerveModule.drivingConfig);
     m_drivingMotor.getConfigurator().setPosition(0);
 
     m_chassisAngularOffset = chassisAngularOffset;
@@ -92,8 +95,9 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees.
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
-    driveVelocity.Velocity = (desiredState.speedMetersPerSecond / (Math.PI * 3) * 60);
-    driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
+    driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.kWheelCircumferenceMeters);
+    driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond / 100);
+    System.out.println(driveVelocity.FeedForward);
     m_drivingMotor.setControl(driveVelocity);
 
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);

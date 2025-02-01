@@ -27,6 +27,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -54,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
 
-  private Pigeon2 m_gyro = new Pigeon2(DriveConstants.kPigeonCanId);
+  private PigeonIMU m_gyro = new PigeonIMU(DriveConstants.kPigeonCanId);
   
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
@@ -131,7 +132,7 @@ public class Drivetrain extends SubsystemBase {
         builder.addDoubleProperty("Back Right Angle", () -> m_rearRight.getState().angle.getRadians(), null);
         builder.addDoubleProperty("Back Right Velocity", () -> m_rearRight.getState().speedMetersPerSecond, null);
 
-        builder.addDoubleProperty("Robot Angle", () -> m_gyro.getRotation2d().getRadians(), null);
+        builder.addDoubleProperty("Robot Angle", () -> (m_gyro.getFusedHeading() * (Math.PI / 180)), null);
       }
     });
 
@@ -368,7 +369,7 @@ public class Drivetrain extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public Command zeroHeading() {
-    return run(() -> {m_gyro.reset();});
+    return runOnce(() -> {m_gyro.setFusedHeading(0);System.out.println("ZERO GYRO");});
   }
 
   /**
@@ -377,7 +378,7 @@ public class Drivetrain extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public Rotation2d getHeading() {
-    return m_gyro.getRotation2d();
+    return new Rotation2d(m_gyro.getFusedHeading());
   }
 
 /**
@@ -386,7 +387,7 @@ public class Drivetrain extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getAngularVelocityZWorld().getValueAsDouble() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getFusedHeading() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 }
 

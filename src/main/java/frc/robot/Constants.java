@@ -22,9 +22,9 @@ public final class Constants {
     public static final double kRobotLength = Units.inchesToMeters(28);
 
     // Drive PIDs
-    public static final double kDrivingS = 0.04;
-    public static final double kDrivingA = 0;
-    public static final double kDrivingV = 0;
+    public static final double kDrivingS = 0.15;
+    public static final double kDrivingA = 25;
+    public static final double kDrivingV = 12;
 
     public static final double kDrivingMinOutput = -1;
     public static final double kDrivingMaxOutput = 1;
@@ -39,24 +39,24 @@ public final class Constants {
     public static final double kTurningMaxOutput = 1;
 
     // Heading PIDs
-    public static final double kHeadingAlignP = 0.01;
+    public static final double kHeadingAlignP = 0.15;
     public static final double kHeadingAlignI = 0;
     public static final double kHeadingAlignD = 0;
 
     public static final double kHeadingAlignTolerance = 2;
 
     // Can IDs (Driving)
-    public static final int kFrontLeftDrivingCanId = 5;
-    public static final int kRearLeftDrivingCanId = 7;
-    public static final int kFrontRightDrivingCanId = 6;
+    public static final int kFrontLeftDrivingCanId = 2;
+    public static final int kRearLeftDrivingCanId = 6;
+    public static final int kFrontRightDrivingCanId = 4;
     public static final int kRearRightDrivingCanId = 8;
     // Can IDs (Turning)
-    public static final int kFrontLeftTurningCanId = 1;
-    public static final int kRearLeftTurningCanId = 3;
-    public static final int kFrontRightTurningCanId = 2;
-    public static final int kRearRightTurningCanId = 4;
+    public static final int kFrontLeftTurningCanId = 3;
+    public static final int kRearLeftTurningCanId = 7;
+    public static final int kFrontRightTurningCanId = 5;
+    public static final int kRearRightTurningCanId = 9;
     // Pigeon ID
-    public static final int kPigeonCanId = 9;
+    public static final int kPigeonCanId = 10;
 
     // Chassis Angle Offsets
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
@@ -72,10 +72,10 @@ public final class Constants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d((kRobotWidth-1.754 / 2), (kRobotLength-1.754) / 2),
-        new Translation2d((kRobotWidth-1.754 / 2) / 2, -(kRobotLength-1.754) / 2),
-        new Translation2d(-(kRobotWidth-1.754 / 2) / 2, (kRobotLength-1.754) / 2),
-        new Translation2d(-(kRobotWidth-1.754 / 2) / 2, -(kRobotLength-1.754) / 2));
+        new Translation2d((kRobotWidth-0.0446 / 2) / 2, (kRobotLength-0.0446) / 2),
+        new Translation2d((kRobotWidth-0.0446 / 2) / 2, -(kRobotLength-0.0446) / 2),
+        new Translation2d(-(kRobotWidth-0.0446 / 2) / 2, (kRobotLength-0.0446) / 2),
+        new Translation2d(-(kRobotWidth-0.0446 / 2) / 2, -(kRobotLength-0.0446) / 2));
 
     public static final double kLimiterModifier = 5.0; // speed / modifier
 
@@ -85,8 +85,8 @@ public final class Constants {
   public static class SwerveConstants{
     public static final int kDrivingMotorPinionTeeth = 13;
 
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kDrivingMotorFreeSpeedRps = FalconMotorConstants.kFreeSpeedRpm / 60;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3);
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
@@ -115,7 +115,7 @@ public final class Constants {
 
     //public static final Color kLedOrange = new Color(255, 50, 0);
   }
-  public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 5676;
+  public static final class FalconMotorConstants {
+    public static final double kFreeSpeedRpm = 6380;
   }
 }

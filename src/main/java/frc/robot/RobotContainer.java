@@ -33,6 +33,8 @@ public class RobotContainer {
         () -> m_driverController.getRightX(), 
         () -> m_driverController.leftTrigger().getAsBoolean()
     ));
+    m_driverController.back()
+      .onTrue(m_drivetrain.zeroHeading());
   }
 
   public Command getAutonomousCommand() {
