@@ -19,7 +19,7 @@ import frc.robot.MotorConfigs;
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
-    private Rotation2d angleOffset;
+    private double angleOffset;
 
     private int m_driveID;
     private int m_angleID;
@@ -35,7 +35,7 @@ public class SwerveModule {
     private final SparkClosedLoopController m_turningClosedLoopController;
 
     public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset){
-        this.angleOffset = new Rotation2d(0);
+        this.angleOffset = chassisAngularOffset;
 
         this.m_driveID = drivingCANId;
         this.m_angleID = turningCANId;
@@ -57,13 +57,17 @@ public class SwerveModule {
     public void setDesiredState(SwerveModuleState desiredState){
         SwerveModuleState correctedDesiredState = new SwerveModuleState();
         correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
-        correctedDesiredState.angle = desiredState.angle.plus(angleOffset);
-        correctedDesiredState.optimize(desiredState.angle);
+        correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(angleOffset));
+    
+        correctedDesiredState.optimize(new Rotation2d(angleEncoder.getPosition()));
 
         m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
         driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.kWheelCircumference);
         driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
         m_driveMotor.setControl(driveVelocity);
+
+        System.out.println("SPEED :  " + correctedDesiredState.speedMetersPerSecond);
+        System.out.println("ANGLE :  " + correctedDesiredState.angle.getRadians());
     }
 
     public Rotation2d getCANcoder(){
