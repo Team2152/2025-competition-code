@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.lib.math;
 
 public class Conversions {
     
@@ -40,5 +40,13 @@ public class Conversions {
     public static double metersToRotations(double wheelMeters, double circumference){
         double wheelRotations = wheelMeters / circumference;
         return wheelRotations;
+    }
+
+    /*
+     * 
+     */
+    public static double degreesToRadians(double degrees) {
+        double radians = degrees * (Math.PI / 180);
+        return radians;
     }
 }
