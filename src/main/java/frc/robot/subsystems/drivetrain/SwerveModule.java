@@ -35,7 +35,7 @@ public class SwerveModule {
     private final SparkClosedLoopController m_turningClosedLoopController;
 
     public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset){
-        this.angleOffset = chassisAngularOffset;
+        this.angleOffset = 0;
 
         this.m_driveID = drivingCANId;
         this.m_angleID = turningCANId;
@@ -61,13 +61,13 @@ public class SwerveModule {
     
         correctedDesiredState.optimize(new Rotation2d(angleEncoder.getPosition()));
 
-        m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+        m_turningClosedLoopController.setReference(desiredState.angle.getRadians(), ControlType.kPosition);
         driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.kWheelCircumference);
         driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
         m_driveMotor.setControl(driveVelocity);
 
         System.out.println("SPEED :  " + correctedDesiredState.speedMetersPerSecond);
-        System.out.println("ANGLE :  " + correctedDesiredState.angle.getRadians());
+        System.out.println("ANGLE :  " + correctedDesiredState.angle.getDegrees());
     }
 
     public Rotation2d getCANcoder(){

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.math.Conversions;
 import frc.lib.util.SwerveWidget;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANConstants.DrivetrainCANs;
@@ -103,9 +104,9 @@ public class Drivetrain extends SubsystemBase {
         }
 
         var swerveModuleStates = SwerveConstants.kSwerveKinematics.toSwerveModuleStates(
-                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedCommanded, ySpeedCommanded, rotDelivered, getHeading()));
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, SwerveConstants.kMaxSpeed);
+                ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedCommanded, ySpeedCommanded, rotDelivered, Rotation2d.fromDegrees(m_gyro.getFusedHeading())));
+        //SwerveDriveKinematics.desaturateWheelSpeeds(
+        //        swerveModuleStates, SwerveConstants.kMaxSpeed);
 
         setStates(swerveModuleStates);
       }
@@ -152,7 +153,9 @@ public class Drivetrain extends SubsystemBase {
      * Returns the current gyro heading.
      */
     public Rotation2d getHeading() {
-        return new Rotation2d(m_gyro.getFusedHeading());
+        double degrees = m_gyro.getFusedHeading();
+        double radians = Conversions.degreesToRadians(degrees);
+        return new Rotation2d(radians);
     }
 
     /**

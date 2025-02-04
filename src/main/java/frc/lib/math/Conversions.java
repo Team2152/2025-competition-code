@@ -49,4 +49,12 @@ public class Conversions {
         double radians = degrees * (Math.PI / 180);
         return radians;
     }
+
+    /*
+     * 
+     */
+    public static double radiansToDegrees(double radians) {
+        double degrees = radians * (180 / Math.PI);
+        return degrees;
+    }
 }
