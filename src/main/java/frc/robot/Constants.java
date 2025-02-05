@@ -72,10 +72,10 @@ public final class Constants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d((kRobotWidth-0.0446 / 2) / 2, (kRobotLength-0.0446) / 2),
-        new Translation2d((kRobotWidth-0.0446 / 2) / 2, -(kRobotLength-0.0446) / 2),
-        new Translation2d(-(kRobotWidth-0.0446 / 2) / 2, (kRobotLength-0.0446) / 2),
-        new Translation2d(-(kRobotWidth-0.0446 / 2) / 2, -(kRobotLength-0.0446) / 2));
+        new Translation2d((kRobotWidth-0.0446 / 2) , (kRobotLength-0.0446) / 2),
+        new Translation2d((kRobotWidth-0.0446 / 2) , (kRobotLength-0.0446) / 2),
+        new Translation2d((kRobotWidth-0.0446 / 2) , (kRobotLength-0.0446) / 2),
+        new Translation2d((kRobotWidth-0.0446 / 2) , (kRobotLength-0.0446) / 2));
 
     public static final double kLimiterModifier = 5.0; // speed / modifier
 
