@@ -2,12 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.drivetrain;
+package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -18,10 +19,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import frc.robot.Configs;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.SwerveConstants;
-import frc.lib.Conversions;
+import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
   private final TalonFX m_drivingMotor;
@@ -29,31 +27,39 @@ public class SwerveModule {
 
   private final AbsoluteEncoder m_turningEncoder;
 
-  private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(DriveConstants.kDrivingS, DriveConstants.kDrivingV, DriveConstants.kDrivingA);
-  private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
+  // private TalonFXConfiguration driveConfig;
+  private boolean flippedDrive;
 
+  private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
+  private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(0.22, 0.05, 0.05);
   private final SparkClosedLoopController m_turningClosedLoopController;
 
-  private double m_chassisAngularOffset = (3 * Math.PI)/2;
+  private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-
-  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean driveFlipped) {
     m_drivingMotor = new TalonFX(drivingCANId);
     m_turningMotor = new SparkMax(turningCANId, MotorType.kBrushless);
+    flippedDrive = driveFlipped;
 
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder();
-    m_turningClosedLoopController = m_turningMotor.getClosedLoopController();
-    m_turningMotor.configure(Configs.MAXSwerveModule.turningConfig, ResetMode.kResetSafeParameters,
-      PersistMode.kPersistParameters);
 
-    //m_drivingMotor.getConfigurator().apply(Configs.MAXSwerveModule.drivingConfig);
-    m_drivingMotor.getConfigurator().setPosition(0);
+    m_turningClosedLoopController = m_turningMotor.getClosedLoopController();
+
+    // driveConfig = Configs.MAXSwerveModule.Driving.config;
+
+    // if (driveFlipped) {
+    //   driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    // }
+
+    m_drivingMotor.getConfigurator().apply(Configs.MAXSwerveModule.Driving.config);
+    m_drivingMotor.getConfigurator().setPosition(0.0);
+
+    m_turningMotor.configure(Configs.MAXSwerveModule.Turning.config, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
     m_chassisAngularOffset = chassisAngularOffset;
-    m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
-
-    m_drivingMotor.setPosition(0);
+    m_desiredState.angle = Rotation2d.fromRotations(m_turningEncoder.getPosition());
   }
 
   /**
@@ -62,11 +68,10 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
-    // Apply chassis angular offset to the encoder position to get the position
-    // relative to the chassis.
-    return new SwerveModuleState(m_drivingMotor.getVelocity().getValueAsDouble(),
+    return new SwerveModuleState(m_drivingMotor.getVelocity().getValueAsDouble() * ModuleConstants.kWheelCircumferenceMeters,
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
-  }
+}
+
 
   /**
    * Returns the current position of the module.
@@ -77,7 +82,7 @@ public class SwerveModule {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
     return new SwerveModulePosition(
-        m_drivingMotor.get(),
+        m_drivingMotor.getPosition().getValueAsDouble() * ModuleConstants.kWheelCircumferenceMeters,
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
@@ -92,15 +97,19 @@ public class SwerveModule {
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
+    // if (flippedDrive) {
+    //   correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(180));
+    // }
+    // 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
-    driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.kWheelCircumferenceMeters);
-    driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond / 100);
-    System.out.println(driveVelocity.FeedForward);
-    m_drivingMotor.setControl(driveVelocity);
-
+    // Command driving and turning SPARKS towards their respective setpoints.
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+
+    driveVelocity.Velocity = correctedDesiredState.speedMetersPerSecond * 60 / ModuleConstants.kWheelCircumferenceMeters;
+    driveVelocity.FeedForward = driveFeedForward.calculate(correctedDesiredState.speedMetersPerSecond * 60);
+    m_drivingMotor.setControl(driveVelocity);
 
     m_desiredState = desiredState;
   }

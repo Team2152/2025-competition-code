@@ -4,37 +4,33 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OIConstants;
-import frc.robot.drivetrain.Drivetrain;
 
 public class RobotContainer {
-  public Drivetrain m_drivetrain;
+  private final Drivetrain m_robotDrive = new Drivetrain();
 
-  private CommandXboxController m_driverController;
-  private CommandXboxController m_operatorController;
+  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   public RobotContainer() {
-    m_drivetrain = new Drivetrain();
-
-    m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-    m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
-
     configureBindings();
+
+    m_robotDrive.setDefaultCommand(
+        m_robotDrive.teleopDrive(
+                () -> m_driverController.getLeftY(),
+                () -> m_driverController.getLeftX(),
+                () -> m_driverController.getRightX(),
+                () -> m_driverController.leftTrigger().getAsBoolean()
+            ));
   }
 
   private void configureBindings() {
-    m_drivetrain.setDefaultCommand(
-      m_drivetrain.teleopDrive(
-        () -> m_driverController.getLeftX(), 
-        () -> m_driverController.getLeftY(), 
-        () -> m_driverController.getRightX(), 
-        () -> m_driverController.leftTrigger().getAsBoolean()
-    ));
     m_driverController.back()
-      .onTrue(m_drivetrain.zeroHeading());
+      .onTrue(m_robotDrive.zeroHeading());
+  
   }
 
   public Command getAutonomousCommand() {
