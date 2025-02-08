@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start L4  2A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L4 2A-HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP-L43A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L43A-HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP-L43B"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L43B-HP"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

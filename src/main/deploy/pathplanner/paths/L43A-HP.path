@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.587970890418036,
-        "y": 5.0617722602752515
+        "x": 3.4461267605633794,
+        "y": 2.7778169014084493
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.57362638122743,
-        "y": 5.225476815694255
+        "x": 3.975751667311919,
+        "y": 3.1448244310812403
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "L4 3A"
     },
     {
       "anchor": {
-        "x": 5.287194834535706,
-        "y": 5.0771052856718475
+        "x": 1.2068661971830972,
+        "y": 1.062940140845069
       },
       "prevControl": {
-        "x": 6.410945214105094,
-        "y": 5.078782499623542
+        "x": 0.991676152013201,
+        "y": 0.9212043943672492
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HP"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 3.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 54.54452556555814
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 56.97613244420333
   },
   "useDefaultConstraints": true
 }

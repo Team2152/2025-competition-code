@@ -6,7 +6,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -81,4 +80,32 @@ public final class Configs {
             }
         }
     }
+
+    public static final class ElevatorModule {
+        public static final class Elevator {
+
+            public static final SparkMaxConfig configM = new SparkMaxConfig();
+
+            
+
+            static {
+              
+
+                    configM
+                        .idleMode(IdleMode.kBrake)
+                        .smartCurrentLimit(20);
+        }
+        public static final SparkMaxConfig configF = new SparkMaxConfig();
+
+            static {
+              
+
+                    configF
+                        .idleMode(IdleMode.kBrake)
+                        .follow(Constants.CANConstants.Elevator.kLeftElevatorMotorId)
+                        .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator);
+                        
+        }
+   }
+}
 }

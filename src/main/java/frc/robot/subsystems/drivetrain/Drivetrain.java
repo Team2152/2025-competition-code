@@ -30,30 +30,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Drivetrain extends SubsystemBase {
   // Create MAXSwerveModules
   private final SwerveModule m_frontLeft = new SwerveModule(
-      CANConstants.DrivetrainCANs.kFrontLeftDriving,
-      CANConstants.DrivetrainCANs.kFrontLeftTurning,
+      CANConstants.Drivetrain.kFrontLeftDriving,
+      CANConstants.Drivetrain.kFrontLeftTurning,
       SwerveConstants.kFrontLeftChassisAngularOffset,
       false);
 
   private final SwerveModule m_frontRight = new SwerveModule(
-      CANConstants.DrivetrainCANs.kFrontRightDriving,
-      CANConstants.DrivetrainCANs.kFrontRightTurning,
+      CANConstants.Drivetrain.kFrontRightDriving,
+      CANConstants.Drivetrain.kFrontRightTurning,
       SwerveConstants.kFrontRightChassisAngularOffset,
       false);
 
   private final SwerveModule m_rearLeft = new SwerveModule(
-      CANConstants.DrivetrainCANs.kBackLeftDriving,
-      CANConstants.DrivetrainCANs.kBackLeftTurning,
+      CANConstants.Drivetrain.kBackLeftDriving,
+      CANConstants.Drivetrain.kBackLeftTurning,
       SwerveConstants.kBackLeftChassisAngularOffset,
       false);
 
   private final SwerveModule m_rearRight = new SwerveModule(
-      CANConstants.DrivetrainCANs.kBackRightDriving,
-      CANConstants.DrivetrainCANs.kBackRightTurning,
+      CANConstants.Drivetrain.kBackRightDriving,
+      CANConstants.Drivetrain.kBackRightTurning,
       SwerveConstants.kBackRightChassisAngularOffset,
       false);
 
-  private final PigeonIMU m_gyro = new PigeonIMU(CANConstants.DrivetrainCANs.kPigeon);
+  private final PigeonIMU m_gyro = new PigeonIMU(CANConstants.Drivetrain.kPigeon);
 
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       SwerveConstants.kDriveKinematics,

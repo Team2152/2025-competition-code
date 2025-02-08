@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static final class CANConstants {
-    public static final class DrivetrainCANs {
+    public static final class Drivetrain {
         public static final int kFrontLeftDriving = 2;
         public static final int kFrontLeftTurning = 3;
 
@@ -24,6 +24,19 @@ public final class Constants {
         public static final int kBackRightTurning = 9;
 
         public static final int kPigeon = 10;
+    }
+
+    // Elavtor Subsystem
+    public static final class Elevator {
+      //Motor Constants
+      public static final int kLeftElevatorMotorId = 11;
+      public static final int kRightElevatorMotorId = 12;
+    }
+  }
+
+  public static final class ElevatorConstants {
+    public static final class CurrentLimits {
+      public static final int kElevator = 50;
     }
   }
 
@@ -46,7 +59,7 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
 
-    public static final class PIDs {
+    public static final class PIDs{
       public static final class Drive {
           public static final double kS = 0.22;
           public static final double kV = 0.05;
@@ -62,10 +75,9 @@ public final class Constants {
   public static final class CurrentLimits {
     public static final int kDriving = 70;
     public static final int kSteering = 20;
+    public static final int kElevator = 50;
+  }    
 }
-
-    
-  }
 
   public static final class ModuleConstants {
     public static final int kDrivingMotorPinionTeeth = 13;
