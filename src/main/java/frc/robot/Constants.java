@@ -32,14 +32,36 @@ public final class Constants {
       public static final int kLeftElevatorMotorId = 11;
       public static final int kRightElevatorMotorId = 12;
     }
+
+
+    public static final class Funnel {
+      public static final int kBeltMotorId = 13;
+    }
+
+    public static final class CoralManipulator {
+      public static final int  kCoralMotorID = 14;
+    }
   }
 
+  public static final class FunnelConstants {
+    public static final class CurrentLimits {
+      public static final int kBelt = 50;
+    }
+  }
+
+  public static final class CoralManipulatorConstants {
+    public static final class CurrentLimits {
+      public static final int kCoral = 50;
+    }
+  }
+  
   public static final class ElevatorConstants {
     public static final class CurrentLimits {
       public static final int kElevator = 50;
     }
   }
 
+    
   public static final class SwerveConstants {
     public static final double kMaxSpeedMetersPerSecond = 5.0;
     public static final double kMaxAngularSpeed = 2 * Math.PI;

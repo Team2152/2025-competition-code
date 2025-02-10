@@ -93,19 +93,47 @@ public final class Configs {
 
                     configM
                         .idleMode(IdleMode.kBrake)
-                        .smartCurrentLimit(20);
-        }
+                        .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator);
+            }
         public static final SparkMaxConfig configF = new SparkMaxConfig();
 
             static {
-              
-
                     configF
-                        .idleMode(IdleMode.kBrake)
-                        .follow(Constants.CANConstants.Elevator.kLeftElevatorMotorId)
-                        .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator);
+                        .follow(Constants.CANConstants.Elevator.kLeftElevatorMotorId);
+                        
                         
         }
    }
+}
+
+   public static final class FunnelModule{
+
+        public static final class Funnel{
+
+            public static final SparkMaxConfig config = new SparkMaxConfig();
+
+            static{
+
+                config
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(Constants.FunnelConstants.CurrentLimits.kBelt);
+            }
+        }
+   
+}
+public static final class CoralModule{
+
+    public static final class CoralManipulator{
+
+        public static final SparkMaxConfig config = new SparkMaxConfig();
+
+        static{
+
+            config
+                .idleMode(IdleMode.kBrake)
+                .smartCurrentLimit(Constants.CoralManipulatorConstants.CurrentLimits.kCoral);
+        }
+    }
+
 }
 }

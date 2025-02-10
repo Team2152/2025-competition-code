@@ -36,7 +36,6 @@ public class Elevator extends SubsystemBase {
     private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(0.22, 0.05, 0.05);
     
 
-
     public Elevator(int LeftElevatorMotorCanID, int RigthElevatorMotorCanID){
 
         m_masterEMotor = new SparkMax(LeftElevatorMotorCanID, MotorType.kBrushless);
@@ -63,9 +62,9 @@ public class Elevator extends SubsystemBase {
     @Override
 
     public void periodic() {
-        m_masterEMotor.set(m_pid.calculate(m_elevatorEncoder.getPosition()));
-        //System.out.println(m_pid.calculate());
+        m_masterEMotor.set(m_pid.calculate(m_elevatorEncoder.getPosition(),targetDistance));
+        System.out.println(m_pid.calculate(m_elevatorEncoder.getPosition(),targetDistance));
     }
-    
+    //m_elevatorEncoder.getPosition()
 }
 
