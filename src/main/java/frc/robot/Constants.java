@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -95,5 +97,7 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
+    public static final PIDConstants kTranslationPID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants kRotationPID = new PIDConstants(1, 0, 0);
   }
 }

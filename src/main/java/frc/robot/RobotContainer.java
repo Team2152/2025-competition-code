@@ -3,20 +3,27 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RobotContainer {
+  private final SendableChooser<Command> m_autoChooser;
+
   private final Drivetrain m_robotDrive = new Drivetrain();
-  private final Elevator m_elevator = new Elevator(CANConstants.Elevator.kLeftElevatorMotorId, CANConstants.Elevator.kRightElevatorMotorId);
+  // private final Elevator m_elevator = new Elevator(CANConstants.Elevator.kLeftElevatorMotorId, CANConstants.Elevator.kRightElevatorMotorId);
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   public RobotContainer() {
+    m_autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Routine", m_autoChooser);
+
     configureBindings();
 
     m_robotDrive.setDefaultCommand(
@@ -26,10 +33,10 @@ public class RobotContainer {
                 () -> m_driverController.getRightX(),
                 () -> m_driverController.leftTrigger().getAsBoolean()
             ));
-      m_driverController.a() 
-        .onTrue(m_elevator.setPosition(100));
-        m_driverController.b() 
-        .onTrue(m_elevator.setPosition(50));
+      // m_driverController.a() 
+      //   .onTrue(m_elevator.setPosition(100));
+      //   m_driverController.b() 
+      //   .onTrue(m_elevator.setPosition(50));
   }
 
   private void configureBindings() {
@@ -39,6 +46,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return m_autoChooser.getSelected();
   }
 }

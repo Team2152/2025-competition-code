@@ -27,9 +27,6 @@ public class SwerveModule {
 
   private final AbsoluteEncoder m_turningEncoder;
 
-  // private TalonFXConfiguration driveConfig;
-  private boolean flippedDrive;
-
   private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
   private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(0.22, 0.05, 0.05);
   private final SparkClosedLoopController m_turningClosedLoopController;
@@ -40,17 +37,9 @@ public class SwerveModule {
   public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean driveFlipped) {
     m_drivingMotor = new TalonFX(drivingCANId);
     m_turningMotor = new SparkMax(turningCANId, MotorType.kBrushless);
-    flippedDrive = driveFlipped;
-
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder();
 
     m_turningClosedLoopController = m_turningMotor.getClosedLoopController();
-
-    // driveConfig = Configs.MAXSwerveModule.Driving.config;
-
-    // if (driveFlipped) {
-    //   driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    // }
 
     m_drivingMotor.getConfigurator().apply(Configs.MAXSwerveModule.Driving.config);
     m_drivingMotor.getConfigurator().setPosition(0.0);
@@ -97,14 +86,9 @@ public class SwerveModule {
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
-    // if (flippedDrive) {
-    //   correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromDegrees(180));
-    // }
-    // 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
-    // Command driving and turning SPARKS towards their respective setpoints.
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
     driveVelocity.Velocity = correctedDesiredState.speedMetersPerSecond * 60 / ModuleConstants.kWheelCircumferenceMeters;
