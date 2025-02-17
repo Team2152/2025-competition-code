@@ -27,19 +27,27 @@ public final class Constants {
 
         public static final int kPigeon = 10;
     }
-
-    // Elavtor Subsystem
     public static final class Elevator {
-      //Motor Constants
-      public static final int kLeftElevatorMotorId = 11;
-      public static final int kRightElevatorMotorId = 12;
+        public static final int kElevatorMaster = 11;
+        public static final int kElevatorSlave = 12;
     }
   }
 
   public static final class ElevatorConstants {
+    public static final class Setpoints {
+      public static final double kIntake = 2;
+      public static final double kL1 = 3;
+      public static final double kL2 = 3;
+      public static final double kL3 = 3;
+      public static final double kL4 = 3;
+    }
+
     public static final class CurrentLimits {
       public static final int kElevator = 50;
     }
+
+    public static final double kElevatorMotorReduction = 7.62;
+    public static final double kElevatorSprocketPitchDiameter = 1.45;
   }
 
   public static final class SwerveConstants {
@@ -77,7 +85,6 @@ public final class Constants {
   public static final class CurrentLimits {
     public static final int kDriving = 70;
     public static final int kSteering = 20;
-    public static final int kElevator = 50;
   }    
 }
 

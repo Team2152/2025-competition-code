@@ -6,6 +6,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import frc.robot.Constants.CANConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -81,31 +83,30 @@ public final class Configs {
         }
     }
 
-    public static final class ElevatorModule {
-        public static final class Elevator {
-
-            public static final SparkMaxConfig configM = new SparkMaxConfig();
-
-            
+    public static final class Elevator {
+        public static final class Master {
+            public static final SparkMaxConfig config = new SparkMaxConfig();
 
             static {
-              
-
-                    configM
-                        .idleMode(IdleMode.kBrake)
-                        .smartCurrentLimit(20);
+                config
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator);  
+                    
+                config.closedLoop
+                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                    .pid(1, 0, 0);
+            }
         }
-        public static final SparkMaxConfig configF = new SparkMaxConfig();
+
+        public static final class Slave {
+            public static final SparkMaxConfig config = new SparkMaxConfig();
 
             static {
-              
-
-                    configF
-                        .idleMode(IdleMode.kBrake)
-                        .follow(Constants.CANConstants.Elevator.kLeftElevatorMotorId)
-                        .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator);
-                        
+                config
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(Constants.ElevatorConstants.CurrentLimits.kElevator)
+                    .follow(CANConstants.Elevator.kElevatorMaster, false);                     
+            }
         }
-   }
-}
+    }
 }
