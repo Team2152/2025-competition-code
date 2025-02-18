@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -26,6 +27,9 @@ public class Elevator extends SubsystemBase {
   private SparkMax m_slaveMotor;
 
   private SparkClosedLoopController m_closedController;
+  private RelativeEncoder m_encoder;
+
+  private double previousSetpoint;
   private double targetSetpoint;
 
   public Elevator() {
@@ -39,14 +43,18 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     m_closedController = m_masterMotor.getClosedLoopController();
+    m_encoder = m_masterMotor.getEncoder();
   }
 
   @Override
   public void periodic() {
     // targetSetpoint needs to be coverted from Inches to Rotations
-
-    m_closedController.setReference((targetSetpoint / (Math.PI * ElevatorConstants.kElevatorSprocketPitchDiameter) * ElevatorConstants.kElevatorMotorReduction),
-     ControlType.kPosition);
+    double convertedSetpoint = (targetSetpoint / (Math.PI * ElevatorConstants.kElevatorSprocketPitchDiameter) * 
+                                ElevatorConstants.kElevatorMotorReduction);
+    if (convertedSetpoint != previousSetpoint) {
+        m_closedController.setReference(convertedSetpoint, ControlType.kPosition);
+        previousSetpoint = convertedSetpoint;
+    }
   }
 
   public void setHeight(ElevatorHeight setpoint) {
@@ -71,5 +79,9 @@ public class Elevator extends SubsystemBase {
 
   public Command setHeightCmd(ElevatorHeight setpoint) {
     return runOnce(()->setHeight(setpoint));
+  }
+
+  public boolean atTarget(double tolerance) {
+    return Math.abs(m_encoder.getPosition() - targetSetpoint) < tolerance;
   }
 }

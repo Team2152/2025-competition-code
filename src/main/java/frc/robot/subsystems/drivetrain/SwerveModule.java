@@ -34,7 +34,7 @@ public class SwerveModule {
   private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
-  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean driveFlipped) {
+  public SwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingMotor = new TalonFX(drivingCANId);
     m_turningMotor = new SparkMax(turningCANId, MotorType.kBrushless);
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder();

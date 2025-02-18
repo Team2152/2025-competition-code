@@ -13,24 +13,35 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class CANConstants {
     public static final class Drivetrain {
-        public static final int kFrontLeftDriving = 2;
-        public static final int kFrontLeftTurning = 3;
+      public static final int kFrontLeftDriving = 2;
+      public static final int kFrontLeftTurning = 3;
 
-        public static final int kFrontRightDriving = 4;
-        public static final int kFrontRightTurning = 5;
+      public static final int kFrontRightDriving = 4;
+      public static final int kFrontRightTurning = 5;
 
-        public static final int kBackLeftDriving = 6;
-        public static final int kBackLeftTurning = 7;
+      public static final int kBackLeftDriving = 6;
+      public static final int kBackLeftTurning = 7;
 
-        public static final int kBackRightDriving = 8;
-        public static final int kBackRightTurning = 9;
+      public static final int kBackRightDriving = 8;
+      public static final int kBackRightTurning = 9;
 
-        public static final int kPigeon = 10;
+      public static final int kPigeon = 10;
     }
     public static final class Elevator {
-        public static final int kElevatorMaster = 11;
-        public static final int kElevatorSlave = 12;
+      public static final int kElevatorMaster = 11;
+      public static final int kElevatorSlave = 12;
     }
+    public static final class Coralinator {
+      public static final int kCoralinator = 13;
+    }
+  }
+
+  public static final class CoralinatorConstants {
+    public static final class CurrentLimits {
+      public static final int kCoralinator = 30;
+    }
+
+    public static final double kIndexingPower = 0.5;
   }
 
   public static final class ElevatorConstants {
@@ -43,10 +54,10 @@ public final class Constants {
     }
 
     public static final class CurrentLimits {
-      public static final int kElevator = 50;
+      public static final int kElevator = 40;
     }
 
-    public static final double kElevatorMotorReduction = 7.62;
+    public static final double kElevatorMotorReduction = 1;
     public static final double kElevatorSprocketPitchDiameter = 1.45;
   }
 
@@ -83,7 +94,7 @@ public final class Constants {
   }
 
   public static final class CurrentLimits {
-    public static final int kDriving = 70;
+    public static final int kDriving = 60;
     public static final int kSteering = 20;
   }    
 }

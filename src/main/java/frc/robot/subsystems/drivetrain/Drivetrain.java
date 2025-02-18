@@ -39,26 +39,22 @@ public class Drivetrain extends SubsystemBase {
   private final SwerveModule m_frontLeft = new SwerveModule(
       CANConstants.Drivetrain.kFrontLeftDriving,
       CANConstants.Drivetrain.kFrontLeftTurning,
-      SwerveConstants.kFrontLeftChassisAngularOffset,
-      false);
+      SwerveConstants.kFrontLeftChassisAngularOffset);
 
   private final SwerveModule m_frontRight = new SwerveModule(
       CANConstants.Drivetrain.kFrontRightDriving,
       CANConstants.Drivetrain.kFrontRightTurning,
-      SwerveConstants.kFrontRightChassisAngularOffset,
-      false);
+      SwerveConstants.kFrontRightChassisAngularOffset);
 
   private final SwerveModule m_rearLeft = new SwerveModule(
       CANConstants.Drivetrain.kBackLeftDriving,
       CANConstants.Drivetrain.kBackLeftTurning,
-      SwerveConstants.kBackLeftChassisAngularOffset,
-      false);
+      SwerveConstants.kBackLeftChassisAngularOffset);
 
   private final SwerveModule m_rearRight = new SwerveModule(
       CANConstants.Drivetrain.kBackRightDriving,
       CANConstants.Drivetrain.kBackRightTurning,
-      SwerveConstants.kBackRightChassisAngularOffset,
-      false);
+      SwerveConstants.kBackRightChassisAngularOffset);
 
   private final PigeonIMU m_gyro = new PigeonIMU(CANConstants.Drivetrain.kPigeon);
 

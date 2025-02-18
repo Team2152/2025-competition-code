@@ -5,6 +5,8 @@
 package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.Elevator.ElevatorHeight;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -16,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
   private final SendableChooser<Command> m_autoChooser;
 
-  private final Drivetrain m_robotDrive = new Drivetrain();
+  private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Elevator m_elevator = new Elevator();
   // private final Elevator m_elevator = new Elevator(CANConstants.Elevator.kLeftElevatorMotorId, CANConstants.Elevator.kRightElevatorMotorId);
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
@@ -26,23 +29,21 @@ public class RobotContainer {
 
     configureBindings();
 
-    m_robotDrive.setDefaultCommand(
-        m_robotDrive.teleopDrive(
+    m_drivetrain.setDefaultCommand(
+      m_drivetrain.teleopDrive(
                 () -> m_driverController.getLeftY(),
                 () -> m_driverController.getLeftX(),
                 () -> m_driverController.getRightX(),
                 () -> m_driverController.leftTrigger().getAsBoolean()
             ));
-      // m_driverController.a() 
-      //   .onTrue(m_elevator.setPosition(100));
-      //   m_driverController.b() 
-      //   .onTrue(m_elevator.setPosition(50));
   }
 
   private void configureBindings() {
     m_driverController.back()
-      .onTrue(m_robotDrive.zeroHeading());
+      .onTrue(m_drivetrain.zeroHeading());
   
+    m_driverController.povLeft()
+      .onTrue(m_elevator.setHeightCmd(ElevatorHeight.INTAKE));
   }
 
   public Command getAutonomousCommand() {

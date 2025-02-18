@@ -109,4 +109,14 @@ public final class Configs {
             }
         }
     }
+
+    public static final class Coralinator {
+        public static final SparkMaxConfig config = new SparkMaxConfig();
+
+        static {
+            config
+                .idleMode(IdleMode.kBrake)
+                .smartCurrentLimit(Constants.CoralinatorConstants.CurrentLimits.kCoralinator);
+        }
+    }
 }
