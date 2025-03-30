@@ -1,13 +1,11 @@
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
@@ -23,38 +21,56 @@ public class Elevator extends SubsystemBase {
     L4
   }
 
-  private SparkMax m_masterMotor;
-  private SparkMax m_slaveMotor;
+  private TalonFX m_masterMotor;
+  private TalonFX m_slaveMotor;
+  private Follower m_follower;
+  private MotionMagicVoltage m_request;
 
-  private SparkClosedLoopController m_closedController;
-  private RelativeEncoder m_encoder;
+  private DigitalInput m_limitSwitch;
 
   private double previousSetpoint;
   private double targetSetpoint;
-
+  private double lsCycles;
+  
   public Elevator() {
-    m_masterMotor = new SparkMax(CANConstants.Elevator.kElevatorMaster, MotorType.kBrushless);
-    m_slaveMotor = new SparkMax(CANConstants.Elevator.kElevatorSlave, MotorType.kBrushless);
+    m_masterMotor = new TalonFX(CANConstants.Elevator.kElevatorMaster);
+    m_slaveMotor = new TalonFX(CANConstants.Elevator.kElevatorSlave);
+    m_follower = new Follower(CANConstants.Elevator.kElevatorMaster, false);
+    m_slaveMotor.setControl(m_follower);
 
-    m_masterMotor.configure(Configs.Elevator.Master.config, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    m_masterMotor.getConfigurator().apply(Configs.Elevator.Master.config);
     
-    m_slaveMotor.configure(Configs.Elevator.Slave.config, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    m_slaveMotor.getConfigurator().apply(Configs.Elevator.Slave.config);
+    m_request = new MotionMagicVoltage(0);
+    m_masterMotor.setPosition(0);
 
-    m_closedController = m_masterMotor.getClosedLoopController();
-    m_encoder = m_masterMotor.getEncoder();
+    m_limitSwitch = new DigitalInput(1);
+    lsCycles = 0;
+
+    //setHeight(ElevatorHeight.INTAKE);
   }
 
   @Override
   public void periodic() {
-    // targetSetpoint needs to be coverted from Inches to Rotations
-    double convertedSetpoint = (targetSetpoint / (Math.PI * ElevatorConstants.kElevatorSprocketPitchDiameter) * 
-                                ElevatorConstants.kElevatorMotorReduction);
-    if (convertedSetpoint != previousSetpoint) {
-        m_closedController.setReference(convertedSetpoint, ControlType.kPosition);
-        previousSetpoint = convertedSetpoint;
+    if (targetSetpoint != previousSetpoint) {
+        m_masterMotor.setControl(m_request.withPosition(targetSetpoint));
+        previousSetpoint = targetSetpoint;
     }
+    SmartDashboard.putNumber("Elevator Pos", m_masterMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Elevator Target", targetSetpoint);
+    SmartDashboard.putBoolean("Elevator LS", m_limitSwitch.get());
+
+    if (m_limitSwitch.get()) {
+      lsCycles++;
+    }
+
+    if (lsCycles>100) {
+      m_masterMotor.setPosition(0);
+      lsCycles=0;
+    }
+
+
+    
   }
 
   public void setHeight(ElevatorHeight setpoint) {
@@ -81,7 +97,7 @@ public class Elevator extends SubsystemBase {
     return runOnce(()->setHeight(setpoint));
   }
 
-  public boolean atTarget(double tolerance) {
-    return Math.abs(m_encoder.getPosition() - targetSetpoint) < tolerance;
+  public Command modifyTarget(double amount) {
+    return runOnce(()->targetSetpoint=targetSetpoint+amount);
   }
 }

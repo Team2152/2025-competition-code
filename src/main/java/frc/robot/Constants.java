@@ -4,13 +4,33 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
 
 public final class Constants {
+  public static final class LEDConstants {
+    public static final class Default {
+      public static final Color color = new Color(255, 100, 0);
+      public static final boolean blinks = false;
+    }
+
+    public static final class Intaking {
+      public static final Color color = new Color(0, 255, 0);
+      public static final boolean blinks = true;
+    }
+
+    public static final class Ready {
+      public static final Color color = new Color(0, 255, 0);
+      public static final boolean blinks = false;
+    }
+  }
   public static final class CANConstants {
     public static final class Drivetrain {
       public static final int kFrontLeftDriving = 2;
@@ -36,28 +56,39 @@ public final class Constants {
     }
   }
 
+  public static final class DrivetrainConstants {
+    public static final class PIDs {
+      public static final class AutoAlign {
+        public static final double kP = 0.001;
+        public static final double kI = 0;
+        public static final double kD = 0;
+      }
+    }
+  }
+
   public static final class CoralinatorConstants {
     public static final class CurrentLimits {
       public static final int kCoralinator = 30;
     }
 
-    public static final double kIndexingPower = 0.5;
+    public static final double kIndexingPower = 0.15;
+    public static final double kPullbackPower = -0.05;
   }
 
   public static final class ElevatorConstants {
     public static final class Setpoints {
-      public static final double kIntake = 2;
-      public static final double kL1 = 3;
-      public static final double kL2 = 3;
-      public static final double kL3 = 3;
-      public static final double kL4 = 3;
+      public static final double kIntake = 0.5;
+      public static final double kL1 = 1;
+      public static final double kL2 = 2.65;
+      public static final double kL3 = 3.85;
+      public static final double kL4 = 7.25;
     }
 
     public static final class CurrentLimits {
       public static final int kElevator = 40;
     }
 
-    public static final double kElevatorMotorReduction = 1;
+    public static final double kElevatorMotorReduction = 9.6429;
     public static final double kElevatorSprocketPitchDiameter = 1.45;
   }
 
@@ -87,15 +118,15 @@ public final class Constants {
           public static final double kA = 0.05;
       }
       public static final class Steer {
-          public static final double kP = 1;
+          public static final double kP = 1.2;
           public static final double kI = 0;
           public static final double kD = 0;
       }
   }
 
   public static final class CurrentLimits {
-    public static final int kDriving = 60;
-    public static final int kSteering = 20;
+    public static final int kDriving = 55;
+    public static final int kSteering = 25;
   }    
 }
 
@@ -117,5 +148,23 @@ public final class Constants {
   public static final class AutoConstants {
     public static final PIDConstants kTranslationPID = new PIDConstants(1, 0, 0);
     public static final PIDConstants kRotationPID = new PIDConstants(1, 0, 0);
+  }
+
+  public static final class VisionConstants {
+    public static final ArrayList<Integer> kReefTags = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+
+    public static final class LeftLimelight {
+      public static final String kLimelightId = "limelight-left";
+
+      public static final double kXTarget = -3.5;
+      public static final double kYTarget = -9.8;
+    }
+
+    public static final class RightLimelight {
+      public static final String kLimelightId = "limelight-right";
+
+      public static final double kXTarget = .9;//1.2;
+      public static final double kYTarget = -6;//7;
+    }
   }
 }

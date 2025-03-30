@@ -3,38 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4461267605633794,
-        "y": 2.7778169014084493
+        "x": 1.4194542253521114,
+        "y": 6.873679577464788
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.975751667311919,
-        "y": 3.1448244310812403
+        "x": 2.272073319260443,
+        "y": 6.299679586370564
       },
       "isLocked": false,
-      "linkedName": "L4 3A"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2068661971830972,
-        "y": 1.062940140845069
+        "x": 4.041373239436619,
+        "y": 5.172975352112676
       },
       "prevControl": {
-        "x": 0.991676152013201,
-        "y": 0.9212043943672492
+        "x": 2.9684313479554305,
+        "y": 5.911345664825236
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "HP"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "EL-L3",
+      "waypointRelativePos": 0.773134328358209,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.54452556555814
+    "rotation": -59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 56.97613244420333
+    "rotation": -49.94216773526989
   },
   "useDefaultConstraints": true
 }
