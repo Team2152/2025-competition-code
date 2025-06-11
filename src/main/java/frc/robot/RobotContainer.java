@@ -4,6 +4,7 @@
 
 package frc.robot;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.coralinator.Coralinator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.Drivetrain.AlignmentStatus;
@@ -26,6 +27,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Elevator m_elevator = new Elevator();
   private final Coralinator m_coralinator = new Coralinator();
+  private final LEDs m_leds = new LEDs(4, m_coralinator);
+  
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(1);
 
@@ -36,8 +39,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("SCORE", 
       m_coralinator.run(1)
+      .andThen(new WaitCommand(1)
       .andThen(m_coralinator.score(0)
-      .andThen(new WaitCommand(4)
       .andThen(m_coralinator.run(0))))
     );
 
@@ -69,8 +72,9 @@ public class RobotContainer {
     m_operatorController.povLeft()
       .onTrue(m_elevator.setHeightCmd(ElevatorHeight.INTAKE));
 
-    // m_operatorController.povUp()
-    //   .onTrue(m_elevator.setHeightCmd(ElevatorHeight.L4));
+    m_operatorController.povUp()
+      .onTrue(m_elevator.setHeightCmd(ElevatorHeight.ZERO
+      ));
 
     m_operatorController.povRight()
       .onTrue(m_elevator.setHeightCmd(ElevatorHeight.L3));

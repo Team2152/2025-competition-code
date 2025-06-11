@@ -14,6 +14,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
   public enum ElevatorHeight {
+    ZERO,
     INTAKE,
     L1,
     L2,
@@ -64,7 +65,7 @@ public class Elevator extends SubsystemBase {
       lsCycles++;
     }
 
-    if (lsCycles>100) {
+    if (lsCycles>10) {
       m_masterMotor.setPosition(0);
       lsCycles=0;
     }
@@ -75,6 +76,9 @@ public class Elevator extends SubsystemBase {
 
   public void setHeight(ElevatorHeight setpoint) {
     switch (setpoint) {
+      case ZERO:
+        targetSetpoint = -0.1;
+        break;
       case INTAKE:
         targetSetpoint = ElevatorConstants.Setpoints.kIntake;
         break;

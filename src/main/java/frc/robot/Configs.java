@@ -65,19 +65,19 @@ public final class Configs {
 
             static {
                 config.Slot0.kS = 0.1;
-                config.Slot0.kG = 0;
+                config.Slot0.kG = 0.25;
                 config.Slot0.kV = 1;
                 config.Slot0.kA = 0.01;
-                config.Slot0.kP = 1;
+                config.Slot0.kP = 30;
                 config.Slot0.kI = 0;
                 config.Slot0.kD = 0.1;
 
                 config.Feedback.SensorToMechanismRatio = ElevatorConstants.kElevatorMotorReduction;
                 config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-                config.MotionMagic.MotionMagicCruiseVelocity = 200 / ElevatorConstants.kElevatorMotorReduction;
-                config.MotionMagic.MotionMagicAcceleration = 25 / ElevatorConstants.kElevatorMotorReduction;
-                config.MotionMagic.MotionMagicJerk = 100 / ElevatorConstants.kElevatorMotorReduction;
+                config.MotionMagic.MotionMagicCruiseVelocity = 300 / ElevatorConstants.kElevatorMotorReduction;
+                config.MotionMagic.MotionMagicAcceleration = 500 / ElevatorConstants.kElevatorMotorReduction;
+                config.MotionMagic.MotionMagicJerk = 1000 / ElevatorConstants.kElevatorMotorReduction;
             }
         }
 

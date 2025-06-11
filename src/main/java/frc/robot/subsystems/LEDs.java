@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,24 +11,18 @@ import frc.robot.subsystems.coralinator.Coralinator;
 import frc.robot.subsystems.coralinator.Coralinator.CoralinatorStates;
 
 public class LEDs extends SubsystemBase {
-    private final AddressableLED m_leds;
-    private final AddressableLEDBuffer m_ledBuffer;
-
-    private Color currentColor = LEDConstants.Default.color;
+    private final DigitalOutput m_dio;
 
     private boolean blinkEnabled = false;
     private boolean blinking = false;
+    private boolean enabled = false;
 
     private Coralinator m_Coralinator;
 
 
-    public LEDs(int pwmPort, int ledLength, Coralinator coralinator) {
+    public LEDs(int dioPort, Coralinator coralinator) {
         m_Coralinator = coralinator;
-        m_leds = new AddressableLED(pwmPort);
-        m_ledBuffer = new AddressableLEDBuffer(ledLength);
-
-        m_leds.setLength(ledLength);
-        m_leds.start();
+        m_dio = new DigitalOutput(dioPort);
 
         Thread flashThread = new Thread(() -> {
             while (true) {
@@ -48,31 +43,19 @@ public class LEDs extends SubsystemBase {
     public void periodic() {
       if (m_Coralinator.m_currentState == CoralinatorStates.INDEXING || m_Coralinator.m_currentState == CoralinatorStates.PULLBACK) {
         setBlink(LEDConstants.Intaking.blinks);
-        setColor(LEDConstants.Intaking.color);
+        enabled = true;
       } else if (m_Coralinator.m_currentState == CoralinatorStates.READY) {
         setBlink(LEDConstants.Ready.blinks);
-        setColor(LEDConstants.Ready.color);
+        enabled = true;
       } else {
-        setBlink(LEDConstants.Default.blinks);
-        setColor(LEDConstants.Default.color);
+        enabled = false;
       }
-        m_leds.setData(m_ledBuffer);
 
-        if (!blinkEnabled || (blinkEnabled && blinking)) {
-            for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-                m_ledBuffer.setLED(i, currentColor);
-            }
+        if ((!enabled) && (!blinkEnabled || (blinkEnabled && blinking))) {
+            m_dio.set(true);
         } else {
-            for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-                m_ledBuffer.setLED(i, Color.kBlack);
-            }
+            m_dio.set(false);
         }
-    }
-
-    public Command setColor(Color color) {
-        return runOnce(
-            () -> currentColor = color
-        );
     }
 
     public Command setBlinkCmd(boolean enabled) {
@@ -83,13 +66,5 @@ public class LEDs extends SubsystemBase {
 
     public void setBlink(boolean enabled) {
       blinkEnabled = enabled;
-    }
-
-    public void enable() {
-        m_leds.start();
-    }
-
-    public void disable() {
-        m_leds.stop();
     }
 }

@@ -31,7 +31,7 @@ public class Coralinator extends SubsystemBase {
 
     m_coralSensor = new TimeOfFlight(14);
     m_coralSensor.setRangingMode(RangingMode.Short, 24);
-    m_currentState = CoralinatorStates.EMPTY;
+    m_currentState = CoralinatorStates.READY;
     hasCoral = m_currentState == CoralinatorStates.READY;
   }
 

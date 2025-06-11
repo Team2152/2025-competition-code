@@ -75,26 +75,28 @@ public class Drivetrain extends SubsystemBase {
   private final Limelight m_rightCamera = new Limelight(VisionConstants.RightLimelight.kLimelightId);
   private AlignmentStatus currentAlignment = AlignmentStatus.NONE;
   
-    private boolean m_robotOrriented = false;
-  
-    private double m_rotOffset = 0;
+  private boolean m_robotOrriented = false;
 
-    private PIDController m_xPID;
-    private PIDController m_yPID;
-    private PIDController m_headingController;
+  private double m_rotOffset = 0;
+
+  private PIDController m_xPID;
+  private PIDController m_yPID;
+  private PIDController m_headingController;
+
+  SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+      SwerveConstants.kDriveKinematics,
+      Rotation2d.fromDegrees(getHeading()),
+      new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+      }, 
+      new Pose2d()
+  );
   
-    SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
-        SwerveConstants.kDriveKinematics,
-        Rotation2d.fromDegrees(getHeading()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        }, 
-        new Pose2d()
-    );
   
+
     public Drivetrain() {
       try{
         RobotConfig config = RobotConfig.fromGUISettings();
@@ -139,6 +141,8 @@ public class Drivetrain extends SubsystemBase {
       SwerveWidget.sendWidget(m_frontLeft, m_frontRight, m_rearLeft, m_rearRight, m_gyro);
     }
   
+    private AutoAlign m_autoalign = new AutoAlign(getDrivetrain());
+    
     @Override
     public void periodic() {
       m_odometry.update(
@@ -152,7 +156,10 @@ public class Drivetrain extends SubsystemBase {
 
           SmartDashboard.putNumber("RotationOffset", m_rotOffset);
           SmartDashboard.putNumber("Rotation", getHeading());
-
+          //System.out.println(m_autoalign);
+          //System.out.println(getDrivetrain());
+          
+      /*
       //boolean aa = SmartDashboard.getBoolean(getName(), false);
 
       // if (m_rightCamera.getTV()) {
@@ -192,8 +199,13 @@ public class Drivetrain extends SubsystemBase {
       //   m_leftCamera.setLight(false);
       //   m_rightCamera.setLight(false);
       // }
+      */
     }
   
+    public Drivetrain getDrivetrain() {
+      return this;
+    }
+
     /**
      * Returns the currently-estimated pose of the robot.
      *
@@ -268,7 +280,7 @@ public class Drivetrain extends SubsystemBase {
                     }               
                   } else if (currentAlignment == AlignmentStatus.RIGHT) {
                     if (m_leftCamera.getTV()) {
-                      yVal=yVal+m_yPID.calculate(m_leftCamera.getTY(), VisionConstants.LeftLimelight.kYTarget);
+                      yVal=yVal-m_yPID.calculate(m_leftCamera.getTY(), VisionConstants.LeftLimelight.kYTarget);
                     }
                   }
               } else {

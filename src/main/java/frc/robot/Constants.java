@@ -13,6 +13,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 
 public final class Constants {
   public static final class LEDConstants {
@@ -62,6 +65,23 @@ public final class Constants {
         public static final double kP = 0.001;
         public static final double kI = 0;
         public static final double kD = 0;
+
+        // Reef positions for Posing
+        ///                    4 / \ 5
+        ///    <Human Zone>   3 |   | 0   <Barge>
+        ///                    2 \ / 1
+        
+        public static final ArrayList<Pose2d> kReefPositions = 
+        new ArrayList<>(Arrays.asList
+        (
+          new Pose2d(0, 0, null), // Position 0
+          new Pose2d(0, 0, null), // Position 1
+          new Pose2d(0, 0, null), // Position 2
+          new Pose2d(0, 0, null), // Position 3
+          new Pose2d(0, 0, null), // Position 4
+          new Pose2d(0, 0, null) // Position 5
+        ));
+
       }
     }
   }
@@ -71,16 +91,16 @@ public final class Constants {
       public static final int kCoralinator = 30;
     }
 
-    public static final double kIndexingPower = 0.15;
+    public static final double kIndexingPower = .5;
     public static final double kPullbackPower = -0.05;
   }
 
   public static final class ElevatorConstants {
     public static final class Setpoints {
-      public static final double kIntake = 0.5;
+      public static final double kIntake = 0.2;
       public static final double kL1 = 1;
-      public static final double kL2 = 2.65;
-      public static final double kL3 = 3.85;
+      public static final double kL2 = 2.15;
+      public static final double kL3 = 3.2;
       public static final double kL4 = 7.25;
     }
 
@@ -146,9 +166,12 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final PIDConstants kTranslationPID = new PIDConstants(1, 0, 0);
-    public static final PIDConstants kRotationPID = new PIDConstants(1, 0, 0);
+    public static final PIDConstants kTranslationPID = new PIDConstants(5, 0, 0);
+    public static final PIDConstants kRotationPID = new PIDConstants(5, 0, 0);
+
+
   }
+
 
   public static final class VisionConstants {
     public static final ArrayList<Integer> kReefTags = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
@@ -157,14 +180,14 @@ public final class Constants {
       public static final String kLimelightId = "limelight-left";
 
       public static final double kXTarget = -3.5;
-      public static final double kYTarget = -9.8;
+      public static final double kYTarget = -5.4;//-6;
     }
 
     public static final class RightLimelight {
       public static final String kLimelightId = "limelight-right";
 
       public static final double kXTarget = .9;//1.2;
-      public static final double kYTarget = -6;//7;
+      public static final double kYTarget = -6.64;//-6;
     }
   }
 }
