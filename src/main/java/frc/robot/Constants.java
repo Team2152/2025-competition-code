@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -74,12 +76,13 @@ public final class Constants {
         public static final ArrayList<Pose2d> kReefPositions = 
         new ArrayList<>(Arrays.asList
         (
-          new Pose2d(0, 0, null), // Position 0
-          new Pose2d(0, 0, null), // Position 1
-          new Pose2d(0, 0, null), // Position 2
-          new Pose2d(0, 0, null), // Position 3
-          new Pose2d(0, 0, null), // Position 4
-          new Pose2d(0, 0, null) // Position 5
+          // Test these for accuracy
+          new Pose2d(6.49, 4, new Rotation2d(Math.toRadians(90))), // Position 0
+          new Pose2d(5.5, 2.26, new Rotation2d(Math.toRadians(150))), // Position 1
+          new Pose2d(3.5, 2.26, new Rotation2d(Math.toRadians(210))), // Position 2
+          new Pose2d(2.5, 4, new Rotation2d(Math.toRadians(270))), // Position 3
+          new Pose2d(3.5, 5.73, new Rotation2d(Math.toRadians(330))), // Position 4
+          new Pose2d(5.5, 5.73, new Rotation2d(Math.toRadians(30))) // Position 5
         ));
 
       }
