@@ -5,6 +5,8 @@
 package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.Climber.ClimberStates;
 import frc.robot.subsystems.coralinator.Coralinator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.Drivetrain.AlignmentStatus;
@@ -28,6 +30,7 @@ public class RobotContainer {
   private final Elevator m_elevator = new Elevator();
   private final Coralinator m_coralinator = new Coralinator();
   private final LEDs m_leds = new LEDs(4, m_coralinator);
+  private final Climber m_climber = new Climber();
   
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(1);
@@ -68,6 +71,9 @@ public class RobotContainer {
   private void configureBindings() {
     m_driverController.back()
       .onTrue(m_drivetrain.zeroHeading());
+
+    m_driverController.y()
+      .onTrue(m_climber.setStateCmd(ClimberStates.DEPLOYED));
   
     m_operatorController.povLeft()
       .onTrue(m_elevator.setHeightCmd(ElevatorHeight.INTAKE));
