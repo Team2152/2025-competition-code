@@ -57,6 +57,10 @@ public final class Constants {
     public static final class Coralinator {
       public static final int kCoralinator = 13;
     }
+    public static final class Climber {
+      public static final int kIntake = 14;
+      public static final int kClimber = 15;
+    }
   }
 
   public static final class DrivetrainConstants {
@@ -188,6 +192,18 @@ public final class Constants {
 
       public static final double kXTarget = .9;//1.2;
       public static final double kYTarget = -6.64;//-6;
+    }
+  }
+
+  public static final class ClimberConstants {
+    public static final boolean kClockwise = true;
+    public static final class Setpoints {
+      public static final double kDeployed = 1;
+      public static final double kClimbed = 10; 
+    }
+    public static final class CurrentLimits {
+      public static final int kIntake = 30;
+      public static final int kClimber = 60;
     }
   }
 }
