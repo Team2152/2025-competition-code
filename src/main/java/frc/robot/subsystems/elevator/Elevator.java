@@ -57,18 +57,19 @@ public class Elevator extends SubsystemBase {
         m_masterMotor.setControl(m_request.withPosition(targetSetpoint));
         previousSetpoint = targetSetpoint;
     }
+
     SmartDashboard.putNumber("Elevator Pos", m_masterMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Target", targetSetpoint);
     SmartDashboard.putBoolean("Elevator LS", m_limitSwitch.get());
 
-    if (m_limitSwitch.get()) {
-      lsCycles++;
-    }
+    // if (m_limitSwitch.get()) {
+    //   lsCycles++;
+    // }
 
-    if (lsCycles>10) {
-      m_masterMotor.setPosition(0);
-      lsCycles=0;
-    }
+    // if (lsCycles>10) {
+    //   m_masterMotor.setPosition(0);
+    //   lsCycles=0;
+    // }
 
 
     
@@ -103,5 +104,9 @@ public class Elevator extends SubsystemBase {
 
   public Command modifyTarget(double amount) {
     return runOnce(()->targetSetpoint=targetSetpoint+amount);
+  }
+
+  public Command zeroTarget() {
+    return runOnce(()->targetSetpoint=0);
   }
 }

@@ -46,38 +46,38 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void periodic() {
-      switch (m_currentState) {
-          case DEPLOYED:
-              m_intakeMotor.set(1);
-              if (getPosition() >= ClimberConstants.Setpoints.kDeployed) {
-                  m_climberMotor.set(0);
-                  if (isIntakeStalled) {
-                    m_currentState = ClimberStates.LATCHED;
-                  }
-              } else {
-                  m_climberMotor.set(0.3);
-              }
-              break;
+    //   switch (m_currentState) {
+    //       case DEPLOYED:
+    //           m_intakeMotor.set(1);
+    //           if (getPosition() >= ClimberConstants.Setpoints.kDeployed) {
+    //               m_climberMotor.set(0);
+    //               if (isIntakeStalled) {
+    //                 m_currentState = ClimberStates.LATCHED;
+    //               }
+    //           } else {
+    //               m_climberMotor.set(0.3);
+    //           }
+    //           break;
 
-          case LATCHED:
-              m_intakeMotor.set(0);
-              m_currentState = ClimberStates.CLIMBING;
-              break;
+    //       case LATCHED:
+    //           m_intakeMotor.set(0);
+    //           m_currentState = ClimberStates.CLIMBING;
+    //           break;
 
-          case CLIMBING:
-              if (getPosition() >= ClimberConstants.Setpoints.kClimbed) {
-                  m_climberMotor.set(0);
-                  m_currentState = ClimberStates.IDLE;
-              } else {
-                  m_climberMotor.set(0.3);
-              }
-              break;
+    //       case CLIMBING:
+    //           if (getPosition() >= ClimberConstants.Setpoints.kClimbed) {
+    //               m_climberMotor.set(0);
+    //               m_currentState = ClimberStates.IDLE;
+    //           } else {
+    //               m_climberMotor.set(0.3);
+    //           }
+    //           break;
 
-          default:
-              m_climberMotor.set(0);
-              m_intakeMotor.set(0);
-              break;
-      }
+    //       default:
+    //           m_climberMotor.set(0);
+    //           m_intakeMotor.set(0);
+    //           break;
+    //  }
   }
 
   private double getPosition() {
@@ -96,6 +96,20 @@ public class Climber extends SubsystemBase {
 
   private boolean isIntakeStalling() {
     return Math.abs(m_intakeMotor.getVelocity().getValueAsDouble()) < 10 && m_intakeMotor.get() != 0;
-}
+    }
+    private void runPivot(double power) {
+        m_climberMotor.set(power);
+    }
 
+    public Command runPivotCmd(double power) {
+        return runOnce(()->runPivot(power));
+    }
+
+    private void runIntake(double power) {
+        m_intakeMotor.set(power);
+    }
+
+    public Command runIntakeCmd(double power) {
+        return runOnce(()->runIntake(power));
+    }
 }

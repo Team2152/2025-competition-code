@@ -64,20 +64,23 @@ public final class Configs {
             public static final TalonFXConfiguration config = new TalonFXConfiguration();
 
             static {
-                config.Slot0.kS = 0.1;
-                config.Slot0.kG = 0.25;
-                config.Slot0.kV = 1;
-                config.Slot0.kA = 0.01;
-                config.Slot0.kP = 30;
-                config.Slot0.kI = 0;
-                config.Slot0.kD = 0.1;
+                config.Slot0.kS = 0.1; // Static Friction (Move Gears)
+                config.Slot0.kG = 0.15; // Gravity (Overcome Gravity)
+                config.Slot0.kA = 0.01; // Acceleration (Unused)
+                config.Slot0.kP = 50; // Proportional (Change this the most)
+                config.Slot0.kI = 0; // Integral (Kept at 0)
+                config.Slot0.kD = 0; // Derivative 
 
+                // Translates Gear Ratio to Mechanism
                 config.Feedback.SensorToMechanismRatio = ElevatorConstants.kElevatorMotorReduction;
+                // Default State
                 config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-                config.MotionMagic.MotionMagicCruiseVelocity = 300 / ElevatorConstants.kElevatorMotorReduction;
-                config.MotionMagic.MotionMagicAcceleration = 500 / ElevatorConstants.kElevatorMotorReduction;
-                config.MotionMagic.MotionMagicJerk = 1000 / ElevatorConstants.kElevatorMotorReduction;
+                // Goal Velocity (Rotations per second)
+                config.MotionMagic.MotionMagicCruiseVelocity = 20;
+                // Acceleration (Rotations per second^2)
+                config.MotionMagic.MotionMagicAcceleration = 50;
+                // Jerk ("Acceleration's Acceleration" : Rotations per second^3)
+                config.MotionMagic.MotionMagicJerk = 0;
             }
         }
 

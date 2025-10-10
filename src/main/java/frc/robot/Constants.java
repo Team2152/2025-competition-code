@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Radians;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.pathplanner.lib.config.PIDConstants;
 
@@ -15,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.lib.utils.AutoAlignPositions;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -72,23 +74,16 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
 
-        // Reef positions for Posing
-        ///                    4 / \ 5
-        ///    <Human Zone>   3 |   | 0   <Barge>
-        ///                    2 \ / 1
-        
-        public static final ArrayList<Pose2d> kReefPositions = 
-        new ArrayList<>(Arrays.asList
-        (
-          // Test these for accuracy
-          new Pose2d(6.49, 4, new Rotation2d(Math.toRadians(90))), // Position 0
-          new Pose2d(5.5, 2.26, new Rotation2d(Math.toRadians(150))), // Position 1
-          new Pose2d(3.5, 2.26, new Rotation2d(Math.toRadians(210))), // Position 2
-          new Pose2d(2.5, 4, new Rotation2d(Math.toRadians(270))), // Position 3
-          new Pose2d(3.5, 5.73, new Rotation2d(Math.toRadians(330))), // Position 4
-          new Pose2d(5.5, 5.73, new Rotation2d(Math.toRadians(30))) // Position 5
-        ));
+        public static final Pose2d kBlueReefPosition = new Pose2d(4.490, 4.020, new Rotation2d(0));
+        public static final Pose2d kRedReefPosition = new Pose2d(13.060, 4.020, new Rotation2d(0));
 
+        public static final double kOffsetX = Units.inchesToMeters(51.25);
+        public static final double kOffsetY = Units.inchesToMeters(6.25);
+
+        public static final List<Pose2d> kBlueReefPositions = AutoAlignPositions.getReefPoints(
+          kBlueReefPosition.getX(), kBlueReefPosition.getY(), kOffsetX, kOffsetY);
+        public static final List<Pose2d> kRedReefPositions = AutoAlignPositions.getReefPoints(
+          kRedReefPosition.getX(), kRedReefPosition.getY(), kOffsetX, kOffsetY);
       }
     }
   }
@@ -106,9 +101,9 @@ public final class Constants {
     public static final class Setpoints {
       public static final double kIntake = 0.2;
       public static final double kL1 = 1;
-      public static final double kL2 = 2.15;
-      public static final double kL3 = 3.2;
-      public static final double kL4 = 7.25;
+      public static final double kL2 = 7;
+      public static final double kL3 = 12;
+      public static final double kL4 = 18;
     }
 
     public static final class CurrentLimits {
@@ -175,8 +170,6 @@ public final class Constants {
   public static final class AutoConstants {
     public static final PIDConstants kTranslationPID = new PIDConstants(5, 0, 0);
     public static final PIDConstants kRotationPID = new PIDConstants(5, 0, 0);
-
-
   }
 
 
@@ -195,6 +188,10 @@ public final class Constants {
 
       public static final double kXTarget = .9;//1.2;
       public static final double kYTarget = -6.64;//-6;
+    }
+
+    public static final class MiddleLimelight {
+      public static final String kLimelightId = "limelight-mid";
     }
   }
 

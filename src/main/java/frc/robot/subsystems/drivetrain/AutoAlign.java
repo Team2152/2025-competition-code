@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 ///         returns the pose with the lowest difference in x/y compared to the Robot.
 
 public class AutoAlign extends SubsystemBase{
-    private final ArrayList<Pose2d> m_reefPositions = DrivetrainConstants.PIDs.AutoAlign.kReefPositions;
+    // private final ArrayList<Pose2d> m_reefPositions = DrivetrainConstants.PIDs.AutoAlign.kReefPositions;
     
-    public AutoAlign(Drivetrain m_drivetrain) {
-        System.out.println(m_drivetrain.getPose());
-    }
+    // public AutoAlign(Drivetrain m_drivetrain) {
+    //     System.out.println(m_drivetrain.getPose());
+    // }
 
     
 }
