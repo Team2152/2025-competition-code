@@ -9,6 +9,7 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.Climber.ClimberStates;
 import frc.robot.subsystems.coralinator.Coralinator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.SimDrivetrain;
 import frc.robot.subsystems.drivetrain.Drivetrain.AlignmentStatus;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorHeight;
@@ -28,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
   private final SendableChooser<Command> m_autoChooser;
 
-  private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Drivetrain m_drivetrain = Robot.isReal() ? new Drivetrain() : new SimDrivetrain();
   private final Elevator m_elevator = new Elevator();
   private final Coralinator m_coralinator = new Coralinator();
   // private final LEDs m_leds = new LEDs(4, m_coralinator);
