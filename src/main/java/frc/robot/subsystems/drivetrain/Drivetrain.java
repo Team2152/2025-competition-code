@@ -136,6 +136,7 @@ public class Drivetrain extends SubsystemBase {
       m_xController.setTolerance(.05);
       m_yController.setTolerance(.05);
       m_headingController.setTolerance(2);
+      m_headingController.enableContinuousInput(-180, 180);
   
       SmartDashboard.putData("Field Pose", m_field);
       
@@ -175,9 +176,7 @@ public class Drivetrain extends SubsystemBase {
         );
       }
 
-      if (m_alignmentNode != null) {
-        m_field.getObject("AutoAlignTarget").setPose(m_alignmentNode);
-      }
+      m_field.getObject("AutoAlignTarget").setPose(m_alignmentNode == null ? Pose2d.kZero : m_alignmentNode);
       m_field.setRobotPose(m_odometry.getEstimatedPosition());
     }
   
@@ -233,7 +232,9 @@ public class Drivetrain extends SubsystemBase {
      *                      field.
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean speedLimiter, boolean fieldRelative) {
+      boolean useRobotHeading = false;
       if (m_autoAligning && m_alignmentNode != null) {
+        useRobotHeading = true;
         // m_alignmentNode = AutoAlignPositions.findClosestPose(getPose(), Utils.isRedAlliance());
         Pose2d currentPose = getPose();
 
@@ -241,9 +242,11 @@ public class Drivetrain extends SubsystemBase {
         m_yController.setSetpoint(m_alignmentNode.getY());
         m_headingController.setSetpoint(m_alignmentNode.getRotation().getDegrees());
 
-        xSpeed = m_xController.calculate(rot);
-        ySpeed = m_yController.calculate(rot);
-        rot = m_headingController.calculate(getHeading());
+        // xSpeed = m_xController.calculate(rot);
+        // ySpeed = m_yController.calculate(rot);
+        xSpeed = m_xController.calculate(currentPose.getX());
+        ySpeed = m_yController.calculate(currentPose.getY());
+        rot = m_headingController.calculate(getPose().getRotation().getDegrees());
       }
       
       // Convert the commanded speeds into the correct units for the drivetrain
@@ -257,10 +260,12 @@ public class Drivetrain extends SubsystemBase {
         rotDelivered = rotDelivered / OIConstants.kLimiterMultiplier;
       }
   
+      // Gyro heading should be used for teleop control, robot heading for auto align
+      double heading = useRobotHeading ? getPose().getRotation().getDegrees() : getHeading();
       var swerveModuleStates = SwerveConstants.kDriveKinematics.toSwerveModuleStates(
           fieldRelative
               ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                  Rotation2d.fromDegrees(getHeading()))
+                  Rotation2d.fromDegrees(heading))
               : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
       SwerveDriveKinematics.desaturateWheelSpeeds(
           swerveModuleStates, SwerveConstants.kMaxSpeedMetersPerSecond);
@@ -279,18 +284,19 @@ public class Drivetrain extends SubsystemBase {
               drive(xVal, yVal, rotVal, speedLimiterVal, !m_robotOrriented);
         });
       }
-  
+
+      final SwerveModuleState[] xStates = new SwerveModuleState[] {
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+      };
   
     /**
      * Sets the wheels into an X formation to prevent movement.
      */
     public Command setX() {
-      return run(()-> {
-        m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-        m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-        m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-        m_rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-      });
+      return run(()-> setStates(xStates));
     }
   
     /**
