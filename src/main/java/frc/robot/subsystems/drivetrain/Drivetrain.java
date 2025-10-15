@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -14,25 +19,34 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.utils.AutoAlignPositions;
 import frc.lib.utils.LimelightHelpers;
+import frc.lib.utils.ReefProximity;
 import frc.lib.utils.SwerveWidget;
 import frc.lib.utils.Utils;
 import frc.robot.Constants.AutoConstants;
@@ -45,6 +59,7 @@ import frc.robot.Constants.SwerveConstants.PIDs.Drive;
 import frc.robot.subsystems.vision.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units.*;
 
 public class Drivetrain extends SubsystemBase {
   public enum AlignmentStatus {
@@ -100,7 +115,24 @@ public class Drivetrain extends SubsystemBase {
       new Pose2d()
   );
   
-  
+  public AprilTagFieldLayout aprilTagFieldLayout;
+    private static final List<Integer> redTags = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+    private static final List<Integer> blueTags = List.of(12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22);
+    public static final List<Integer> redReefTags = List.of(6,7,8,9,10,11);
+    public static final List<Integer> blueReefTags = List.of(17, 18, 19, 20, 21, 22);
+    public static final List<Integer> allReefTags = new ArrayList<>();
+
+    private final Distance reefBackDistance = Units.Meters.of(0.55).plus(Units.Inches.of(0.5 - 1));
+    private final Distance reefSideDistance = Units.Inches.of(13).div(2);
+
+    private final Transform2d leftReefTransform = new Transform2d(reefBackDistance.in(Units.Meters), -reefSideDistance.in(Units.Meters), Rotation2d.k180deg);
+    private final Transform2d rightReefTransform = new Transform2d(reefBackDistance.in(Units.Meters), reefSideDistance.in(Units.Meters), Rotation2d.k180deg);
+
+    public final HashMap<Integer, Pose2d> tagPoses2d = new HashMap<>();
+    public final HashMap<Integer, Pose2d> leftReefHashMap = new HashMap<>();
+    public final HashMap<Integer, Pose2d> rightReefHashMap = new HashMap<>();
+
+    public final ReefProximity reefProximity = new ReefProximity(leftReefHashMap, rightReefHashMap);
 
     public Drivetrain() {
       try{
@@ -129,12 +161,12 @@ public class Drivetrain extends SubsystemBase {
         DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
       }
   
-      m_xController = new PIDController(DrivetrainConstants.PIDs.AutoAlign.kP, DrivetrainConstants.PIDs.AutoAlign.kI, DrivetrainConstants.PIDs.AutoAlign.kD);
-      m_yController = new PIDController(DrivetrainConstants.PIDs.AutoAlign.kP, DrivetrainConstants.PIDs.AutoAlign.kI, DrivetrainConstants.PIDs.AutoAlign.kD);
-      m_headingController = new PIDController(0.005, 0, 0.0001);
+      m_xController = new PIDController(DrivetrainConstants.PIDs.AutoAlignPos.kP, DrivetrainConstants.PIDs.AutoAlignPos.kI, DrivetrainConstants.PIDs.AutoAlignPos.kD);
+      m_yController = new PIDController(DrivetrainConstants.PIDs.AutoAlignPos.kP, DrivetrainConstants.PIDs.AutoAlignPos.kI, DrivetrainConstants.PIDs.AutoAlignPos.kD);
+      m_headingController = new PIDController(DrivetrainConstants.PIDs.AutoAlignRot.kP,DrivetrainConstants.PIDs.AutoAlignRot.kI,DrivetrainConstants.PIDs.AutoAlignRot.kD);
       
-      m_xController.setTolerance(.05);
-      m_yController.setTolerance(.05);
+      m_xController.setTolerance(.0);
+      m_yController.setTolerance(.0);
       m_headingController.setTolerance(2);
       m_headingController.enableContinuousInput(-180, 180);
   
@@ -143,6 +175,35 @@ public class Drivetrain extends SubsystemBase {
       HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
   
       SwerveWidget.sendWidget(m_frontLeft, m_frontRight, m_rearLeft, m_rearRight, m_gyro);
+
+      //LimelightHelpers.SetRobotOrientation(VisionConstants.MiddleLimelight.kLimelightId, m_gyro.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0);
+
+      try {
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
+        } catch (Exception e) {
+            aprilTagFieldLayout = null;
+      }
+
+      allReefTags.addAll(redReefTags);
+      allReefTags.addAll(blueReefTags);
+
+      for (var allianceTags : List.of(redTags, blueTags)) {
+            for (int tagID : allianceTags) {
+                Optional<Pose3d> pose3d = aprilTagFieldLayout.getTagPose(tagID);
+                if (pose3d.isPresent()) {
+                    tagPoses2d.put(tagID, pose3d.get().toPose2d());
+                }
+            }
+      }
+
+      for (int i : redReefTags) {
+        leftReefHashMap.put(i, calculateReefPose(i, true));
+        rightReefHashMap.put(i, calculateReefPose(i, false));
+    }
+    for (int i : blueReefTags) {
+        leftReefHashMap.put(i, calculateReefPose(i, true));
+        rightReefHashMap.put(i, calculateReefPose(i, false));
+    }
     }
 
     @Override
@@ -161,20 +222,24 @@ public class Drivetrain extends SubsystemBase {
       
       LimelightHelpers.PoseEstimate limelightMeasurement;
       //LimelightHelpers.setCameraPose_RobotSpace(VisionConstants.MiddleLimelight.kLimelightId, m_rotOffset, m_rotOffset, m_rotOffset, m_rotOffset, m_rotOffset, m_rotOffset);
-      LimelightHelpers.SetRobotOrientation(VisionConstants.MiddleLimelight.kLimelightId, m_gyro.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0);
-      if (Utils.isRedAlliance()) {
-        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed(VisionConstants.MiddleLimelight.kLimelightId);
-      } else {
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.MiddleLimelight.kLimelightId);
-      }
       
-      if (limelightMeasurement != null) {
-        m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+      if (limelightMeasurement != null && limelightMeasurement.tagCount > 0) {
+        m_odometry.setVisionMeasurementStdDevs(MatBuilder.fill(Nat.N3(), Nat.N1(), 0.025, 0.025, 0.025));
         m_odometry.addVisionMeasurement(
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds
         );
       }
+
+      if (m_autoAligning) {
+        Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags);
+            if (closestTagAndPose == null) {
+                m_alignmentNode = Pose2d.kZero;
+            } else {
+                m_alignmentNode = closestTagAndPose.getValue();
+            }
+          }
 
       m_field.getObject("AutoAlignTarget").setPose(m_alignmentNode == null ? Pose2d.kZero : m_alignmentNode);
       m_field.setRobotPose(m_odometry.getEstimatedPosition());
@@ -182,7 +247,13 @@ public class Drivetrain extends SubsystemBase {
   
     public Command setClosestNodeCmd() {
       return runOnce(()->{
-        m_alignmentNode = AutoAlignPositions.findClosestPose(getPose(), Utils.isRedAlliance());
+        
+        Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags, blueReefTags, redReefTags);
+        if (closestTagAndPose == null) {
+            m_alignmentNode = Pose2d.kZero;
+        } else {
+            m_alignmentNode = closestTagAndPose.getValue();
+        }
       });
     }
 
@@ -233,7 +304,8 @@ public class Drivetrain extends SubsystemBase {
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean speedLimiter, boolean fieldRelative) {
       boolean useRobotHeading = false;
-      if (m_autoAligning && m_alignmentNode != null) {
+      if (m_autoAligning && m_alignmentNode != null && (!m_xController.atSetpoint() && !m_yController.atSetpoint()
+      )) {
         useRobotHeading = true;
         // m_alignmentNode = AutoAlignPositions.findClosestPose(getPose(), Utils.isRedAlliance());
         Pose2d currentPose = getPose();
@@ -368,4 +440,41 @@ public class Drivetrain extends SubsystemBase {
       m_rearLeft.setDesiredState(targetStates[2]);
       m_rearRight.setDesiredState(targetStates[3]);
     }
-}
+
+
+    // Vision
+    private Pose2d getReefTagPose(int tagID) {
+      Pose2d pose = tagPoses2d.get(tagID);
+      if (pose == null) return null;
+
+      // if (TAG_OFFSETS.containsKey(tagID)) {
+      //     pose = pose.transformBy(new Transform2d(0, TAG_OFFSETS.get(tagID).in(Meters), Rotation2d.kZero));
+      // }
+      return pose;
+    }
+
+    /**
+     * Generates the scoring pose of the robot relative to a reef AprilTag. This is used to pre-calculate and store all
+     * positions to prevent duplicate object creation. To access these pre-calculated poses, use {@link #getReefPose(int, boolean)}.
+     */
+    private Pose2d calculateReefPose(int tagID, boolean left) {
+      Pose2d pose = getReefTagPose(tagID);
+      if (pose == null) return null;
+
+      return pose.transformBy(left ? leftReefTransform : rightReefTransform);
+    }
+
+    public int getReefTagFromPose(Pose2d pose) {
+      for (Entry<Integer, Pose2d> entry : leftReefHashMap.entrySet()) {
+          if (entry.getValue().equals(pose)) {
+              return entry.getKey();
+          }
+      }
+      for (Entry<Integer, Pose2d> entry : rightReefHashMap.entrySet()) {
+          if (entry.getValue().equals(pose)) {
+              return entry.getKey();
+          }
+      }
+      return -1;
+    }
+  }

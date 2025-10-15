@@ -7,6 +7,7 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.AutoConstants.AutoAlign;
 import frc.robot.Constants.DrivetrainConstants;
 
 public class AutoAlignPositions {
@@ -31,7 +32,7 @@ public class AutoAlignPositions {
     public static List<Pose2d> getReefPoints(double anchorX, double anchorY, double offsetX, double offsetY) {
         List<Pose2d> reefPoints = new ArrayList<>();
 
-        double[] angles = {0, 30, 60, 180, 210, 240};
+        double[] angles = {0, 30, 60, 180, -30, -60};
 
         for (double angle : angles) {
             reefPoints.add(getReefPoint(anchorX, anchorY, angle,  offsetX, offsetY));
@@ -46,10 +47,10 @@ public class AutoAlignPositions {
         List<Pose2d> poses = null;
         double minDistance = Double.MAX_VALUE;
 
-        if (!isRed) {
-            poses = DrivetrainConstants.PIDs.AutoAlign.kRedReefPositions;
+        if (isRed) {
+            poses = AutoAlign.kRedReefPositions;
         } else {
-            poses = DrivetrainConstants.PIDs.AutoAlign.kBlueReefPositions;
+            poses = AutoAlign.kBlueReefPositions;
         }
     
         for (Pose2d pose : poses) {

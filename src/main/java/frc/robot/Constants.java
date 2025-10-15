@@ -69,21 +69,15 @@ public final class Constants {
 
   public static final class DrivetrainConstants {
     public static final class PIDs {
-      public static final class AutoAlign {
-        public static final double kP = 0.7;
+      public static final class AutoAlignPos {
+        public static final double kP = 0.2;
         public static final double kI = 0;
         public static final double kD = 0;
-
-        public static final Pose2d kBlueReefPosition = new Pose2d(4.490, 4.020, new Rotation2d(0));
-        public static final Pose2d kRedReefPosition = new Pose2d(13.060, 4.020, new Rotation2d(0));
-
-        public static final double kOffsetX = Units.inchesToMeters(51.25);
-        public static final double kOffsetY = Units.inchesToMeters(6.25);
-
-        public static final List<Pose2d> kBlueReefPositions = AutoAlignPositions.getReefPoints(
-          kBlueReefPosition.getX(), kBlueReefPosition.getY(), kOffsetX, kOffsetY);
-        public static final List<Pose2d> kRedReefPositions = AutoAlignPositions.getReefPoints(
-          kRedReefPosition.getX(), kRedReefPosition.getY(), kOffsetX, kOffsetY);
+      }
+      public static final class AutoAlignRot {
+        public static final double kP = 0.001;
+        public static final double kI = 0;
+        public static final double kD = 0;
       }
     }
   }
@@ -170,6 +164,19 @@ public final class Constants {
   public static final class AutoConstants {
     public static final PIDConstants kTranslationPID = new PIDConstants(5, 0, 0);
     public static final PIDConstants kRotationPID = new PIDConstants(5, 0, 0);
+
+    public static final class AutoAlign {
+      public static final Pose2d kBlueReefPosition = new Pose2d(4.490, 4.020, new Rotation2d(0));
+      public static final Pose2d kRedReefPosition = new Pose2d(13.060, 4.020, new Rotation2d(0));
+
+      public static final double kOffsetX = Units.inchesToMeters(51.25);
+      public static final double kOffsetY = Units.inchesToMeters(6.25);
+
+      public static final List<Pose2d> kBlueReefPositions = AutoAlignPositions.getReefPoints(
+        kBlueReefPosition.getX(), kBlueReefPosition.getY(), kOffsetX, kOffsetY);
+      public static final List<Pose2d> kRedReefPositions = AutoAlignPositions.getReefPoints(
+        kRedReefPosition.getX(), kRedReefPosition.getY(), kOffsetX, kOffsetY);
+    }
   }
 
 
