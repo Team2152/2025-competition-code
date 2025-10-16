@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start 5L"
+            "pathName": "Start to First"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ALIGN-LEFT"
+            "name": "ALIGN-RIGHT"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 Left HP"
+            "pathName": "First to HP"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HP 1L"
+            "pathName": "HP to Second"
           }
         },
         {
@@ -81,6 +81,18 @@
           "type": "named",
           "data": {
             "name": "SCORE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Second to HP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HP to Third"
           }
         }
       ]
