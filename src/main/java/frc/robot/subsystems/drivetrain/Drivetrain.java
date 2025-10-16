@@ -248,7 +248,7 @@ public class Drivetrain extends SubsystemBase {
     public Command setClosestNodeCmd() {
       return runOnce(()->{
         
-        Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags, blueReefTags, redReefTags);
+        Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags);
         if (closestTagAndPose == null) {
             m_alignmentNode = Pose2d.kZero;
         } else {
