@@ -73,15 +73,12 @@ public class RobotContainer {
 
   private void configureBindings() {
     m_driverController.leftBumper()
-      .onTrue(m_drivetrain.doAutoAlignCmd(true))
-      .onFalse(m_drivetrain.doAutoAlignCmd(false));
+      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.LEFT))
+      .onFalse(m_drivetrain.doAutoAlignCmd(AlignmentStatus.NONE));
 
     m_driverController.rightBumper()
-      .onTrue(m_drivetrain.doAutoAlignCmd(true))
-      .onFalse(m_drivetrain.doAutoAlignCmd(false));
-
-    m_driverController.b()
-      .onTrue(m_drivetrain.setClosestNodeCmd());
+      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.RIGHT))
+      .onFalse(m_drivetrain.doAutoAlignCmd(AlignmentStatus.NONE));
 
     m_driverController.back()
       .onTrue(m_drivetrain.zeroHeading());

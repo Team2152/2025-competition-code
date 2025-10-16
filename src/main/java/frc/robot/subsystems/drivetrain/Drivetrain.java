@@ -44,7 +44,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.utils.AutoAlignPositions;
 import frc.lib.utils.LimelightHelpers;
 import frc.lib.utils.ReefProximity;
 import frc.lib.utils.SwerveWidget;
@@ -65,7 +64,6 @@ public class Drivetrain extends SubsystemBase {
   public enum AlignmentStatus {
     LEFT,
     RIGHT,
-    CENTER,
     NONE
   }
   // Create MAXSwerveModules
@@ -93,6 +91,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final Field2d m_field = new Field2d();
 
+  private AlignmentStatus m_alignmentStatus = AlignmentStatus.NONE;
   private boolean m_autoAligning = false;
   private Pose2d m_alignmentNode = null;
   
@@ -132,7 +131,7 @@ public class Drivetrain extends SubsystemBase {
     public final HashMap<Integer, Pose2d> leftReefHashMap = new HashMap<>();
     public final HashMap<Integer, Pose2d> rightReefHashMap = new HashMap<>();
 
-    public final ReefProximity reefProximity = new ReefProximity(leftReefHashMap, rightReefHashMap);
+    public final ReefProximity reefProximity;
 
     public Drivetrain() {
       try{
@@ -199,11 +198,12 @@ public class Drivetrain extends SubsystemBase {
       for (int i : redReefTags) {
         leftReefHashMap.put(i, calculateReefPose(i, true));
         rightReefHashMap.put(i, calculateReefPose(i, false));
-    }
-    for (int i : blueReefTags) {
-        leftReefHashMap.put(i, calculateReefPose(i, true));
-        rightReefHashMap.put(i, calculateReefPose(i, false));
-    }
+      }
+      for (int i : blueReefTags) {
+          leftReefHashMap.put(i, calculateReefPose(i, true));
+          rightReefHashMap.put(i, calculateReefPose(i, false));
+      }
+      reefProximity = new ReefProximity(leftReefHashMap, rightReefHashMap);
     }
 
     @Override
@@ -232,34 +232,31 @@ public class Drivetrain extends SubsystemBase {
         );
       }
 
-      if (m_autoAligning) {
-        Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags);
-            if (closestTagAndPose == null) {
-                m_alignmentNode = Pose2d.kZero;
-            } else {
-                m_alignmentNode = closestTagAndPose.getValue();
-            }
-          }
+      // if (m_autoAligning) {
+      //   Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags);
+      //       if (closestTagAndPose == null) {
+      //           m_alignmentNode = Pose2d.kZero;
+      //       } else {
+      //           m_alignmentNode = closestTagAndPose.getValue();
+      //       }
+      //     }
 
       m_field.getObject("AutoAlignTarget").setPose(m_alignmentNode == null ? Pose2d.kZero : m_alignmentNode);
       m_field.setRobotPose(m_odometry.getEstimatedPosition());
+
+      m_autoAligning = m_alignmentStatus != AlignmentStatus.NONE;
     }
-  
-    public Command setClosestNodeCmd() {
+
+    public Command doAutoAlignCmd(AlignmentStatus status) {
       return runOnce(()->{
-        
+        m_alignmentStatus = status;
+
         Entry<Integer, Pose2d> closestTagAndPose = reefProximity.closestReefPose(getPose(), allReefTags);
         if (closestTagAndPose == null) {
             m_alignmentNode = Pose2d.kZero;
         } else {
-            m_alignmentNode = closestTagAndPose.getValue();
+            m_alignmentNode = reefProximity.getReefPose(closestTagAndPose.getKey(), m_alignmentStatus == AlignmentStatus.LEFT);
         }
-      });
-    }
-
-    public Command doAutoAlignCmd(Boolean enabled) {
-      return runOnce(()->{
-        m_autoAligning = enabled;
       });
     }
 

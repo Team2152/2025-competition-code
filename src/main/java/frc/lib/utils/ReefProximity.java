@@ -16,10 +16,16 @@ public class ReefProximity {
     public static final List<Integer> redReefTags = List.of(6,7,8,9,10,11);
     public static final List<Integer> blueReefTags = List.of(17, 18, 19, 20, 21, 22);
     
+    public static HashMap<Integer, Pose2d> m_leftReefHashMap;
+    public static HashMap<Integer, Pose2d> m_rightReefHashMap;
+
     public ReefProximity(HashMap<Integer, Pose2d> leftReefHashMap, HashMap<Integer, Pose2d> rightReefHashMap) {
         reefList = new ArrayList<Entry<Integer, Pose2d>>();
         leftReefHashMap.entrySet().forEach(reefList::add);
         rightReefHashMap.entrySet().forEach(reefList::add);
+
+        m_leftReefHashMap = leftReefHashMap;
+        m_rightReefHashMap = rightReefHashMap;
     }
 
     public Entry<Integer, Pose2d> closestReefPose(Pose2d position, boolean blueAlliance) {
@@ -44,5 +50,13 @@ public class ReefProximity {
         }
 
         return closest;
+    }
+
+    public Pose2d getReefPose(int tagID, boolean left) {
+        if (left) {
+            return m_leftReefHashMap.get(tagID);
+        } else {
+            return m_rightReefHashMap.get(tagID);
+        }
     }
 }
