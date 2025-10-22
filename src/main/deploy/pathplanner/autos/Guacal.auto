@@ -11,27 +11,52 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "ALIGN-RIGHT"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SCORE"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ALIGN-NONE"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-RIGHT"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MANUAL-DRIVE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-L4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SCORE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-NONE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-INTAKE"
+                }
+              }
+            ]
           }
         },
         {
@@ -53,7 +78,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.5
+                  "waitTime": 1.5
                 }
               }
             ]
@@ -66,21 +91,52 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "ALIGN-LEFT"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SCORE"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-LEFT"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MANUAL-DRIVE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-L4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SCORE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-NONE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-INTAKE"
+                }
+              }
+            ]
           }
         },
         {
@@ -90,9 +146,77 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "INTAKE-WAIT"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "HP to Third"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-RIGHT"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MANUAL-DRIVE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-L4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SCORE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ALIGN-NONE"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "EL-INTAKE"
+                }
+              }
+            ]
           }
         }
       ]

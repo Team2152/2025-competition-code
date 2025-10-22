@@ -247,6 +247,14 @@ public class Drivetrain extends SubsystemBase {
       m_autoAligning = m_alignmentStatus != AlignmentStatus.NONE;
     }
 
+    public Command driveCmd() {
+      return run(() -> {drive(0, 0, 0, false, true);});
+    }
+
+    public boolean autoAlignNodeDistance(double meters) {
+      return getPose().getTranslation().getDistance(m_alignmentNode.getTranslation()) <= meters;
+    }
+
     public Command doAutoAlignCmd(AlignmentStatus status) {
       return runOnce(()->{
         m_alignmentStatus = status;
