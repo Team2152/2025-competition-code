@@ -3,9 +3,16 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.fasterxml.jackson.databind.util.SimpleBeanPropertyDefinition;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
@@ -33,6 +40,10 @@ public class Elevator extends SubsystemBase {
   private double previousSetpoint;
   private double targetSetpoint;
   private double lsCycles;
+
+  private Mechanism2d mech;
+  private MechanismRoot2d root;
+  private MechanismLigament2d elevatorStage;
   
   public Elevator() {
     m_masterMotor = new TalonFX(CANConstants.Elevator.kElevatorMaster);
@@ -50,6 +61,12 @@ public class Elevator extends SubsystemBase {
     lsCycles = 0;
 
     //setHeight(ElevatorHeight.INTAKE);
+      mech = new Mechanism2d(3, 3);
+      root = mech.getRoot("elevator", 1.75, 0);
+
+      elevatorStage =
+          root.append(new MechanismLigament2d("elevator1", 1, 90, 8, new Color8Bit(Color.kBlue)));
+      SmartDashboard.putData("Elevator Simulation", mech);
   }
 
   @Override
@@ -62,6 +79,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Pos", m_masterMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Target", targetSetpoint);
     SmartDashboard.putBoolean("Elevator LS", m_limitSwitch.get());
+
+    elevatorStage.setLength(targetSetpoint * Math.PI * Units.inchesToMeters(1.25));
 
     // if (m_limitSwitch.get()) {
     //   lsCycles++;

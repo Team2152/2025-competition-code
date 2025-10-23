@@ -41,21 +41,23 @@ public class RobotContainer {
   CommandXboxController m_operatorController = new CommandXboxController(1);
 
   public RobotContainer() {
-    // NamedCommands.registerCommand("EL-L2", m_elevator.setHeightCmd(ElevatorHeight.L2));
-    // NamedCommands.registerCommand("EL-L3", m_elevator.setHeightCmd(ElevatorHeight.L3));
-    // NamedCommands.registerCommand("EL-INTAKE", m_elevator.setHeightCmd(ElevatorHeight.INTAKE));
+    NamedCommands.registerCommand("EL-L2", m_elevator.setHeightCmd(ElevatorHeight.L2));
+    NamedCommands.registerCommand("EL-L3", m_elevator.setHeightCmd(ElevatorHeight.L3));
+    NamedCommands.registerCommand("EL-L4", m_elevator.setHeightCmd(ElevatorHeight.L4));
+    NamedCommands.registerCommand("EL-INTAKE", m_elevator.setHeightCmd(ElevatorHeight.INTAKE));
 
-    // NamedCommands.registerCommand("SCORE", 
-    //   m_coralinator.run(1)
-    //   .andThen(new WaitCommand(1)
-    //   .andThen(m_coralinator.score(0)
-    //   .andThen(m_coralinator.run(0))))
-    // );
+    NamedCommands.registerCommand("SCORE", 
+      m_coralinator.run(1)
+      .andThen(new WaitCommand(1)
+      .andThen(m_coralinator.score(0)
+      .andThen(m_coralinator.run(0))))
+    );
 
-    // NamedCommands.registerCommand("ALIGN-LEFT", m_drivetrain.setAlignmentState(AlignmentStatus.LEFT));
-    // NamedCommands.registerCommand("ALIGN-RIGHT", m_drivetrain.setAlignmentState(AlignmentStatus.RIGHT));
-    // NamedCommands.registerCommand("ALIGN-NONE", m_drivetrain.setAlignmentState(AlignmentStatus.NONE));
-    // NamedCommands.registerCommand("INTAKE-WAIT", new WaitUntilCommand(() -> m_coralinator.hasCoral));
+    NamedCommands.registerCommand("ALIGN-LEFT", m_drivetrain.doAutoAlignCmd(AlignmentStatus.LEFT));
+    NamedCommands.registerCommand("ALIGN-RIGHT", m_drivetrain.doAutoAlignCmd(AlignmentStatus.RIGHT));
+    NamedCommands.registerCommand("ALIGN-NONE", m_drivetrain.doAutoAlignCmd(AlignmentStatus.NONE));
+    NamedCommands.registerCommand("MANUAL-DRIVE", m_drivetrain.driveCmd().until(()->m_drivetrain.autoAlignNodeDistance(0.0381)));
+    NamedCommands.registerCommand("INTAKE-WAIT", new WaitUntilCommand(() -> m_coralinator.hasCoral));
 
     m_autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Routine", m_autoChooser);
