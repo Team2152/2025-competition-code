@@ -76,9 +76,9 @@ public final class Configs {
                 // Default State
                 config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
                 // Goal Velocity (Rotations per second)
-                config.MotionMagic.MotionMagicCruiseVelocity = 20;
+                config.MotionMagic.MotionMagicCruiseVelocity = 5;
                 // Acceleration (Rotations per second^2)
-                config.MotionMagic.MotionMagicAcceleration = 50;
+                config.MotionMagic.MotionMagicAcceleration = 30;
                 // Jerk ("Acceleration's Acceleration" : Rotations per second^3)
                 config.MotionMagic.MotionMagicJerk = 0;
             }
@@ -100,6 +100,19 @@ public final class Configs {
             config
                 .idleMode(IdleMode.kBrake)
                 .smartCurrentLimit(Constants.CoralinatorConstants.CurrentLimits.kCoralinator);
+        }
+    }
+
+    public static final class Funnel {
+        public static final SparkMaxConfig config = new SparkMaxConfig();
+
+        static {
+            config
+                .idleMode(IdleMode.kBrake)
+                .smartCurrentLimit(20);
+            config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(1, 0, 0);
         }
     }
 }

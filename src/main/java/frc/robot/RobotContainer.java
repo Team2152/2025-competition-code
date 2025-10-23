@@ -13,6 +13,7 @@ import frc.robot.subsystems.drivetrain.SimDrivetrain;
 import frc.robot.subsystems.drivetrain.Drivetrain.AlignmentStatus;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.Elevator.ElevatorHeight;
+import frc.robot.subsystems.funnel.Funnel;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -34,6 +35,7 @@ public class RobotContainer {
   private final Coralinator m_coralinator = new Coralinator();
   // private final LEDs m_leds = new LEDs(4, m_coralinator);
   private final Climber m_climber = new Climber();
+  private final Funnel m_funnel = new Funnel();
   
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(1);
@@ -73,11 +75,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     m_driverController.leftBumper()
-      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.LEFT))
+      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.LEFT)
+      .andThen(m_elevator.setHeightCmd(ElevatorHeight.ALIGN)))
       .onFalse(m_drivetrain.doAutoAlignCmd(AlignmentStatus.NONE));
 
     m_driverController.rightBumper()
-      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.RIGHT))
+      .onTrue(m_drivetrain.doAutoAlignCmd(AlignmentStatus.RIGHT)
+      .andThen(m_elevator.setHeightCmd(ElevatorHeight.ALIGN)))
       .onFalse(m_drivetrain.doAutoAlignCmd(AlignmentStatus.NONE));
 
     m_driverController.back()
@@ -87,11 +91,16 @@ public class RobotContainer {
       .onTrue(m_climber.runPivotCmd(0.1))
       .onFalse(m_climber.runPivotCmd(0));
 
-      m_driverController.x()
-      .onTrue(m_climber.runPivotCmd(0.5))
-      .onFalse(m_climber.runPivotCmd(0));
+    m_driverController.povDown()
+      .onFalse(m_climber.Climb());
 
-    m_driverController.leftTrigger()
+    m_driverController.povUp()
+      .onFalse(m_climber.resetCmd());
+
+    m_driverController.povLeft()
+      .onFalse(m_funnel.toggleFunnel());
+
+    m_driverController.rightTrigger()
       .onTrue(m_climber.runIntakeCmd(-1))
       .onFalse(m_climber.runIntakeCmd(0));
   
@@ -109,10 +118,10 @@ public class RobotContainer {
       .onTrue(m_elevator.setHeightCmd(ElevatorHeight.L2));
 
     m_operatorController.rightTrigger()
-      .onTrue(m_elevator.modifyTarget(1));
+      .onTrue(m_elevator.modifyTarget(.1));
 
     m_operatorController.leftTrigger()
-      .onTrue(m_elevator.modifyTarget(-1));
+      .onTrue(m_elevator.modifyTarget(-.1));
 
     m_operatorController.y()
       .onTrue(m_elevator.zeroTarget());

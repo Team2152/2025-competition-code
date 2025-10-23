@@ -121,7 +121,7 @@ public class Drivetrain extends SubsystemBase {
     public static final List<Integer> blueReefTags = List.of(17, 18, 19, 20, 21, 22);
     public static final List<Integer> allReefTags = new ArrayList<>();
 
-    private final Distance reefBackDistance = Units.Meters.of(0.55).plus(Units.Inches.of(0.5 - 1));
+    private final Distance reefBackDistance = Units.Inches.of(13);
     private final Distance reefSideDistance = Units.Inches.of(13).div(2);
 
     private final Transform2d leftReefTransform = new Transform2d(reefBackDistance.in(Units.Meters), -reefSideDistance.in(Units.Meters), Rotation2d.k180deg);
@@ -164,8 +164,8 @@ public class Drivetrain extends SubsystemBase {
       m_yController = new PIDController(DrivetrainConstants.PIDs.AutoAlignPos.kP, DrivetrainConstants.PIDs.AutoAlignPos.kI, DrivetrainConstants.PIDs.AutoAlignPos.kD);
       m_headingController = new PIDController(DrivetrainConstants.PIDs.AutoAlignRot.kP,DrivetrainConstants.PIDs.AutoAlignRot.kI,DrivetrainConstants.PIDs.AutoAlignRot.kD);
       
-      m_xController.setTolerance(.0);
-      m_yController.setTolerance(.0);
+      m_xController.setTolerance(.0127);
+      m_yController.setTolerance(.0127);
       m_headingController.setTolerance(2);
       m_headingController.enableContinuousInput(-180, 180);
   
@@ -301,8 +301,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void drive(double xSpeed, double ySpeed, double rot, boolean speedLimiter, boolean fieldRelative) {
       boolean useRobotHeading = false;
-      if (m_autoAligning && m_alignmentNode != null && (!m_xController.atSetpoint() && !m_yController.atSetpoint()
-      )) {
+      if (m_autoAligning && m_alignmentNode != null) {
         useRobotHeading = true;
         // m_alignmentNode = AutoAlignPositions.findClosestPose(getPose(), Utils.isRedAlliance());
         Pose2d currentPose = getPose();
@@ -313,9 +312,9 @@ public class Drivetrain extends SubsystemBase {
 
         // xSpeed = m_xController.calculate(rot);
         // ySpeed = m_yController.calculate(rot);
-        xSpeed = m_xController.calculate(currentPose.getX());
-        ySpeed = m_yController.calculate(currentPose.getY());
-        rot = m_headingController.calculate(getPose().getRotation().getDegrees());
+          xSpeed = m_xController.calculate(currentPose.getX());
+          ySpeed = m_yController.calculate(currentPose.getY());
+          rot = m_headingController.calculate(getPose().getRotation().getDegrees());
       }
       
       // Convert the commanded speeds into the correct units for the drivetrain
@@ -323,7 +322,7 @@ public class Drivetrain extends SubsystemBase {
       double ySpeedDelivered = ySpeed * SwerveConstants.kMaxSpeedMetersPerSecond;
       double rotDelivered = rot * SwerveConstants.kMaxAngularSpeed;
 
-      if (speedLimiter) {
+      if (speedLimiter || m_autoAligning) {
         xSpeedDelivered = xSpeedDelivered / OIConstants.kLimiterMultiplier;
         ySpeedDelivered = ySpeedDelivered / OIConstants.kLimiterMultiplier;
         rotDelivered = rotDelivered / OIConstants.kLimiterMultiplier;

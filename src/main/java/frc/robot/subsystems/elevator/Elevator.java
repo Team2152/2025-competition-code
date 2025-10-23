@@ -16,6 +16,7 @@ public class Elevator extends SubsystemBase {
   public enum ElevatorHeight {
     ZERO,
     INTAKE,
+    ALIGN,
     L1,
     L2,
     L3,
@@ -82,6 +83,9 @@ public class Elevator extends SubsystemBase {
         break;
       case INTAKE:
         targetSetpoint = ElevatorConstants.Setpoints.kIntake;
+        break;
+      case ALIGN:
+        targetSetpoint = ElevatorConstants.Setpoints.kAlign;
         break;
       case L1:
         targetSetpoint = ElevatorConstants.Setpoints.kL1;

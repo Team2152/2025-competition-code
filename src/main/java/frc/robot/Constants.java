@@ -64,17 +64,20 @@ public final class Constants {
       public static final int kIntake = 14;
       public static final int kClimber = 15;
     }
+    public static final class Funnel {
+      public static final int kFunnel = 16;
+    }
   }
 
   public static final class DrivetrainConstants {
     public static final class PIDs {
       public static final class AutoAlignPos {
-        public static final double kP = 1;
+        public static final double kP = 0.75;
         public static final double kI = 0;
         public static final double kD = 0;
       }
       public static final class AutoAlignRot {
-        public static final double kP = .1;
+        public static final double kP = .025;
         public static final double kI = 0;
         public static final double kD = 0;
       }
@@ -86,17 +89,18 @@ public final class Constants {
       public static final int kCoralinator = 30;
     }
 
-    public static final double kIndexingPower = .5;
+    public static final double kIndexingPower = .4;
     public static final double kPullbackPower = -0.05;
   }
 
   public static final class ElevatorConstants {
     public static final class Setpoints {
-      public static final double kIntake = 0.2;
+      public static final double kIntake = 0.3;
+      public static final double kAlign = 2;
       public static final double kL1 = 1;
-      public static final double kL2 = 7;
-      public static final double kL3 = 12;
-      public static final double kL4 = 18;
+      public static final double kL2 = 6.5;
+      public static final double kL3 = 10.6;
+      public static final double kL4 = 16.6;
     }
 
     public static final class CurrentLimits {
